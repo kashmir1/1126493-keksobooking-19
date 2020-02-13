@@ -1,3 +1,5 @@
+'use strict';
+
 var avatarNumbers = [];
 var prices = [1000, 20000, 40000];
 var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
@@ -21,13 +23,10 @@ addAvatarNumber();
 
 // Функция добавления массива
 var getData = function (number, array) {
-  for (var i = 0; i <= number; i++) {
-    array[number];
-    return array[number];
-  }
+  return array[number];
 };
 
-//Функция записи координат
+// Функция записи координат
 var getLocationCoordinates = function (x, y) {
   return String(x) + ' ' + String(y);
 };
@@ -42,10 +41,10 @@ var getRanbomNumber = function (x, y) {
   return Math.floor(Math.random() * (x - y + 1) + y);
 };
 
-console.log(avatarNumbers);
+var mocks = [];
 
-var mock = [
-  {
+var createMock = function () {
+  var mock = {
     author: {
       avatar: 'img/avatars/user' + getData(0, avatarNumbers)
     },
@@ -67,8 +66,10 @@ var mock = [
       x: getRanbomNumber(1, 100),
       y: getRanbomNumber(130, 630)
     }
+  };
 
-  }
-];
+  mocks.push(mock);
+};
 
-console.log(mock);
+createMock();
+
