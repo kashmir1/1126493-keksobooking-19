@@ -54,7 +54,7 @@ var mocks = [];
 
 // Создаем объекты и записываем в массив
 var createMock = function () {
-  for (var i = 0; i <= 7; i++) {
+  for (var i = 0; i < 8; i++) {
     var mock = {
       author: {
         avatar: 'img/avatars/user' + getData(i, avatarNumbers)
@@ -93,20 +93,21 @@ var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var fragment = document.createDocumentFragment();
+// var fragment = document.createDocumentFragment();
 
-var movePin = function (user) {
+var movePin = function (mock) {
   var pinElement = pinTemplate.cloneNode(true);
-
-  for (var i = 0; i <= user; i++) {
-    pinElement.style.left = mocks[i].location.x;
-    pinElement.style.top = mocks[i].location.y;
-    pinElement.querySelector('img').src = mocks[i].author.avatar;
-    pinElement.querySelector('img').alt = mocks[i].offer.title;
-    fragment.appendChild(pinElement);
-  }
+  pinElement.style.left = mocks[i].location.x;
+  pinElement.style.top = mocks[i].location.y;
+  pinElement.querySelector('img').src = mocks[i].author.avatar;
+  pinElement.querySelector('img').alt = mocks[i].offer.title;
+  return pinElement;
 };
 
-movePin(3);
+var fragment = document.createDocumentFragment();
+
+for (var i = 0; i < 8; i++) {
+  fragment.appendChild(movePin(mocks[i]));
+}
 
 mapPins.appendChild(fragment);
