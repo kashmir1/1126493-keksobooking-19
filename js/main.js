@@ -89,22 +89,24 @@ advMap.classList.remove('map--faded');
 
 var mapPins = document.querySelector('.map__pins');
 
-var movePin = function (user) {
-  var mapPin = document.querySelector('.map__pin');
-  var avatar = mapPin.querySelector('img');
-
-  for (var i = 0; i <= user; i++) {
-    mapPin.style.left = mocks[i].location.x;
-    mapPin.style.top = mocks[i].location.y;
-    avatar.src = mocks[i].author.avatar;
-    avatar.alt = mocks[i].offer.title;
-  }
-};
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
 
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < 7; i++) {
-  fragment.appendChild(movePin(i));
-}
+var movePin = function (user) {
+  var pinElement = pinTemplate.cloneNode(true);
+
+  for (var i = 0; i <= user; i++) {
+    pinElement.style.left = mocks[i].location.x;
+    pinElement.style.top = mocks[i].location.y;
+    pinElement.querySelector('img').src = mocks[i].author.avatar;
+    pinElement.querySelector('img').alt = mocks[i].offer.title;
+    fragment.appendChild(pinElement);
+  }
+};
+
+movePin(3);
 
 mapPins.appendChild(fragment);
