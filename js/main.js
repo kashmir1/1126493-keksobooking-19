@@ -54,7 +54,7 @@ var mocks = [];
 
 // Создаем объекты и записываем в массив
 var createMock = function () {
-  for (var i = 0; i <= 8 - 1; i++) {
+  for (var i = 0; i <= 7; i++) {
     var mock = {
       author: {
         avatar: 'img/avatars/user' + getData(i, avatarNumbers)
@@ -87,11 +87,24 @@ createMock();
 var advMap = document.querySelector('.map');
 advMap.classList.remove('map--faded');
 
-var mapPin = document.querySelector('.map__pin');
-var avatar = mapPin.querySelector('img');
+var mapPins = document.querySelector('.map__pins');
 
+var movePin = function (user) {
+  var mapPin = document.querySelector('.map__pin');
+  var avatar = mapPin.querySelector('img');
 
-mapPin.style.left = mocks[0].location.x;
-mapPin.style.top = mocks[0].location.y;
-avatar.src = mocks[0].author.avatar;
-avatar.alt = mocks[0].offer.title;
+  for (var i = 0; i <= user; i++) {
+    mapPin.style.left = mocks[i].location.x;
+    mapPin.style.top = mocks[i].location.y;
+    avatar.src = mocks[i].author.avatar;
+    avatar.alt = mocks[i].offer.title;
+  }
+};
+
+var fragment = document.createDocumentFragment();
+
+for (var i = 0; i < 7; i++) {
+  fragment.appendChild(movePin(i));
+}
+
+mapPins.appendChild(fragment);
