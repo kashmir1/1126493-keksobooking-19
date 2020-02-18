@@ -19,8 +19,11 @@ var PIN_W_X = 0;
 var PIN_W_Y = 1200;
 var PIN_H_X = 130;
 var PIN_H_Y = 630;
-var PIN_TIP_W = 31;
-var PIN_TIP_H = 72;
+var PIN_TIP_W = 50 / 2;
+var PIN_TIP_H = 70;
+
+var MAIN_PIN_LEFT = 32 / 2;
+var MAIN_PIN_TOP = 82;
 
 // Функция генерации массива аватарок
 var addAvatarNumber = function () {
@@ -38,7 +41,7 @@ var getData = function (number, array) {
 
 // Функция записи координат
 var getLocationCoordinates = function (x, y) {
-  return String(x) + ' ' + String(y);
+  return String(x) + ', ' + String(y);
 };
 
 
@@ -76,8 +79,8 @@ var createMock = function () {
       },
 
       location: {
-        x: getRanbomNumber(PIN_W_X, PIN_W_Y - PIN_TIP_W) + 'px',
-        y: getRanbomNumber(PIN_H_X, PIN_H_Y - PIN_TIP_H) + 'px'
+        x: getRanbomNumber(PIN_W_X, PIN_W_Y + PIN_TIP_W) + 'px',
+        y: getRanbomNumber(PIN_H_X, PIN_H_Y + PIN_TIP_H) + 'px'
       }
     };
     mocks.push(mock);
@@ -110,6 +113,13 @@ var mapPinMain = advMap.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var formElements = adForm.querySelectorAll('.ad-form__element');
 
+var address = document.querySelector('#address');
+var pinCoordinateLeft = parseInt(mapPinMain.style.left, 10);
+var pinCoordinateTop = parseInt(mapPinMain.style.top, 10);
+
+
+// address.value = (pinCoordinateLeft + ', ' + pinCoordinateTop);
+address.value = (pinCoordinateLeft + MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + MAIN_PIN_TOP);
 
 // Делаем все элементы формы неактивными
 formElements.forEach(function (input) {
@@ -133,10 +143,4 @@ var onPinClick = function () {
 
 mapPinMain.addEventListener('mousedown', onPinClick);
 
-//
-// Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled, добавленного на них или на их
-// родительские блоки fieldset;
-// Форма с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
-// Единственное доступное действие в неактивном состоянии — перемещение метки .map__pin--main,
-// являющейся контролом указания адреса объявления. Первое взаимодействие с меткой (mousedown) переводит
-// страницу в активное состояние.
+
