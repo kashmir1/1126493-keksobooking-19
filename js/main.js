@@ -118,14 +118,18 @@ formElements.forEach(function (input) {
 
 
 var onPinClick = function () {
-  advMap.classList.remove('map--faded');
-  mapPins.appendChild(fragment);
-  adForm.classList.remove('ad-form--disabled');
-
-  formElements.forEach(function (input) {
-    input.removeAttribute('disabled');
+  document.addEventListener('mousedown', function (evt) {
+    if (evt.which === 1) {
+      advMap.classList.remove('map--faded');
+      mapPins.appendChild(fragment);
+      adForm.classList.remove('ad-form--disabled');
+      formElements.forEach(function (input) {
+        input.removeAttribute('disabled');
+      });
+    }
   });
 };
+
 
 mapPinMain.addEventListener('mousedown', onPinClick);
 
