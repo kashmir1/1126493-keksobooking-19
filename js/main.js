@@ -84,10 +84,7 @@ var createMock = function () {
   }
 };
 createMock();
-// console.log(mocks);
 
-var advMap = document.querySelector('.map');
-var mapPinMain = advMap.querySelector('.map__pin--main');
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
@@ -104,15 +101,38 @@ var movePin = function () {
 
 var fragment = document.createDocumentFragment();
 
-
 for (var i = 0; i < OBJECT_QUANTITY; i++) {
   fragment.appendChild(movePin(mocks[i]));
 }
 
+var advMap = document.querySelector('.map');
+var mapPinMain = advMap.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var formElements = adForm.querySelectorAll('.ad-form__element');
 
-mapPinMain.addEventListener('click', function () {
-  advMap.classList.remove('map--faded');
-  mapPins.appendChild(fragment);
+
+// Делаем все элементы формы неактивными
+formElements.forEach(function (input) {
+  input.setAttribute('disabled', 'disabled');
 });
 
 
+var onPinClick = function () {
+  advMap.classList.remove('map--faded');
+  mapPins.appendChild(fragment);
+  adForm.classList.remove('ad-form--disabled');
+
+  formElements.forEach(function (input) {
+    input.removeAttribute('disabled');
+  });
+};
+
+mapPinMain.addEventListener('mousedown', onPinClick);
+
+//
+// Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled, добавленного на них или на их
+// родительские блоки fieldset;
+// Форма с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
+// Единственное доступное действие в неактивном состоянии — перемещение метки .map__pin--main,
+// являющейся контролом указания адреса объявления. Первое взаимодействие с меткой (mousedown) переводит
+// страницу в активное состояние.
