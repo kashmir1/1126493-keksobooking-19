@@ -19,11 +19,15 @@ var PIN_W_X = 0;
 var PIN_W_Y = 1200;
 var PIN_H_X = 130;
 var PIN_H_Y = 630;
-var PIN_TIP_W = 50 / 2;
-var PIN_TIP_H = 70;
+
+var PIN_TAIL_X = 20;
+var PIN_TAIL_Y = 40;
 
 var MAIN_PIN_LEFT = 32 / 2;
 var MAIN_PIN_TOP = 82;
+
+var LEFT_MOUSE_BUTTON = 1;
+var ENTER_KEY = 'Enter';
 
 // Функция генерации массива аватарок
 var addAvatarNumber = function () {
@@ -79,8 +83,8 @@ var createMock = function () {
       },
 
       location: {
-        x: getRanbomNumber(PIN_W_X, PIN_W_Y + PIN_TIP_W) + 'px',
-        y: getRanbomNumber(PIN_H_X, PIN_H_Y + PIN_TIP_H) + 'px'
+        x: getRanbomNumber(PIN_W_X, PIN_W_Y) - PIN_TAIL_X + 'px',
+        y: getRanbomNumber(PIN_H_X, PIN_H_Y) - PIN_TAIL_Y + 'px'
       }
     };
     mocks.push(mock);
@@ -125,6 +129,7 @@ formElements.forEach(function (input) {
   input.setAttribute('disabled', 'disabled');
 });
 
+// Функция аткивации окна
 var activateForm = function () {
   advMap.classList.remove('map--faded');
   mapPins.appendChild(fragment);
@@ -134,20 +139,59 @@ var activateForm = function () {
   });
 };
 
+// Активация по ЛКМ
 var onPinClick = function (evt) {
-  if (evt.which === 1) {
+  if (evt.which === LEFT_MOUSE_BUTTON) {
     activateForm();
   }
 };
 
+// Активация по Enter
 var onEnterPress = function (evt) {
-  if (evt.key === 'Enter') {
+  if (evt.key === ENTER_KEY) {
     activateForm();
   }
 };
-
 
 mapPinMain.addEventListener('mousedown', onPinClick);
 mapPinMain.addEventListener('keydown', onEnterPress);
 
+// Валидация заголовка объявления (не в этом задании)
+// var titleInput = adForm.querySelector('#title');
+//
+// titleInput.addEventListener('invalid', function () {
+//   if (titleInput.validity.tooShort) {
+//     titleInput.setCustomValidity('Заголовок объявления должен состоять минимум из 30 символов');
+//   } else if (titleInput.validity.tooLong) {
+//     titleInput.setCustomValidity('Заголовок объявления не должен превышать 100 символов');
+//   } else if (titleInput.validity.valueMissing) {
+//     titleInput.setCustomValidity('Обязательное поле');
+//   } else {
+//     titleInput.setCustomValidity('');
+//   }
+// });
 
+// Валидация и соответствие количества гостей с количеством комнат
+var roomNumber = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+
+var getRoomValidation = function () {
+  if (roomNumber.value === '1' && capacity.value !== '1') {
+    capacity.setCustomValidity('Эта комната для одного гостя');
+  } else if (roomNumber.value === '2' && capacity.value === '3') {
+    capacity.setCustomValidity('Эта комната для одного или двух гостей');
+  } else if (roomNumber.value === '2' && capacity.value === '0') {
+    capacity.setCustomValidity('Эта комната для одного или двух гостей');
+  } else if (roomNumber.value === '3' && capacity.value === '0') {
+    capacity.setCustomValidity('Эта комната для одного - трех гостей');
+  } else if (roomNumber.value === '100' && capacity.value !== '0') {
+    capacity.setCustomValidity('Количество гостей должно быть не менее 100');
+  } else {
+    capacity.setCustomValidity('');
+  }
+};
+
+getRoomValidation();
+
+roomNumber.addEventListener('change', getRoomValidation);
+capacity.addEventListener('change', getRoomValidation);
