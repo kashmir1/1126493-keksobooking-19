@@ -118,7 +118,6 @@ var pinCoordinateLeft = parseInt(mapPinMain.style.left, 10);
 var pinCoordinateTop = parseInt(mapPinMain.style.top, 10);
 
 
-// address.value = (pinCoordinateLeft + ', ' + pinCoordinateTop);
 address.value = (pinCoordinateLeft + MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + MAIN_PIN_TOP);
 
 // Делаем все элементы формы неактивными
@@ -126,21 +125,29 @@ formElements.forEach(function (input) {
   input.setAttribute('disabled', 'disabled');
 });
 
-
-var onPinClick = function () {
-  document.addEventListener('mousedown', function (evt) {
-    if (evt.which === 1) {
-      advMap.classList.remove('map--faded');
-      mapPins.appendChild(fragment);
-      adForm.classList.remove('ad-form--disabled');
-      formElements.forEach(function (input) {
-        input.removeAttribute('disabled');
-      });
-    }
+var activateForm = function () {
+  advMap.classList.remove('map--faded');
+  mapPins.appendChild(fragment);
+  adForm.classList.remove('ad-form--disabled');
+  formElements.forEach(function (input) {
+    input.removeAttribute('disabled');
   });
+};
+
+var onPinClick = function (evt) {
+  if (evt.which === 1) {
+    activateForm();
+  }
+};
+
+var onEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    activateForm();
+  }
 };
 
 
 mapPinMain.addEventListener('mousedown', onPinClick);
+mapPinMain.addEventListener('keydown', onEnterPress);
 
 
