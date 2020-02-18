@@ -12,6 +12,8 @@ var photosList = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
+var OBJECT_QUANTITY = 8;
+
 // Координаты для вставки метки за вычетом острого конца
 var PIN_W_X = 0;
 var PIN_W_Y = 1200;
@@ -22,7 +24,7 @@ var PIN_TIP_H = 72;
 
 // Функция генерации массива аватарок
 var addAvatarNumber = function () {
-  for (var i = 1; i <= 8; i++) {
+  for (var i = 1; i <= OBJECT_QUANTITY; i++) {
     avatarNumbers.push('0' + i + '.png');
   }
 };
@@ -54,7 +56,7 @@ var mocks = [];
 
 // Создаем объекты и записываем в массив
 var createMock = function () {
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < OBJECT_QUANTITY; i++) {
     var mock = {
       author: {
         avatar: 'img/avatars/user' + getData(i, avatarNumbers)
@@ -85,17 +87,13 @@ createMock();
 // console.log(mocks);
 
 var advMap = document.querySelector('.map');
-advMap.classList.remove('map--faded');
-
+var mapPinMain = advMap.querySelector('.map__pin--main');
 var mapPins = document.querySelector('.map__pins');
-
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-// var fragment = document.createDocumentFragment();
-
-var movePin = function (mock) {
+var movePin = function () {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = mocks[i].location.x;
   pinElement.style.top = mocks[i].location.y;
@@ -106,8 +104,15 @@ var movePin = function (mock) {
 
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < 8; i++) {
+
+for (var i = 0; i < OBJECT_QUANTITY; i++) {
   fragment.appendChild(movePin(mocks[i]));
 }
 
-mapPins.appendChild(fragment);
+
+mapPinMain.addEventListener('click', function () {
+  advMap.classList.remove('map--faded');
+  mapPins.appendChild(fragment);
+});
+
+
