@@ -1,6 +1,15 @@
 'use strict';
 
-var avatarNumbers = [];
+var avatarNumbers = [
+  'img/avatars/user01.png',
+  'img/avatars/user02.png',
+  'img/avatars/user03.png',
+  'img/avatars/user04.png',
+  'img/avatars/user05.png',
+  'img/avatars/user06.png',
+  'img/avatars/user07.png',
+  'img/avatars/user08.png'
+];
 var prices = [1000, 20000, 40000];
 var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
 var rooms = [1, 2, 3, 4, 5];
@@ -15,19 +24,21 @@ var photosList = [
 var OBJECT_QUANTITY = 8;
 
 // Координаты для вставки метки за вычетом острого конца
-var PIN_W_X = 0;
-var PIN_W_Y = 1200;
-var PIN_H_X = 130;
-var PIN_H_Y = 630;
+var pinsCoordinates = {
+  PIN_W_X: 0,
+  PIN_W_Y: 1200,
+  PIN_H_X: 130,
+  PIN_H_Y: 630,
+  PIN_TAIL_X: 20,
+  PIN_TAIL_Y: 40,
+  MAIN_PIN_LEFT: 32 / 2,
+  MAIN_PIN_TOP: 82
+};
 
-var PIN_TAIL_X = 20;
-var PIN_TAIL_Y = 40;
-
-var MAIN_PIN_LEFT = 32 / 2;
-var MAIN_PIN_TOP = 82;
-
-var LEFT_MOUSE_BUTTON = 1;
-var ENTER_KEY = 'Enter';
+var controlsEvents = {
+  LEFT_MOUSE_BUTTON: 1,
+  ENTER_KEY: 'Enter'
+};
 
 // Функция генерации массива аватарок
 var addAvatarNumber = function () {
@@ -37,11 +48,6 @@ var addAvatarNumber = function () {
 };
 
 addAvatarNumber();
-
-// Функция добавления массива
-var getData = function (number, array) {
-  return array[number];
-};
 
 // Функция записи координат
 var getLocationCoordinates = function (x, y) {
@@ -66,14 +72,14 @@ var createMock = function () {
   for (var i = 0; i < OBJECT_QUANTITY; i++) {
     var mock = {
       author: {
-        avatar: 'img/avatars/user' + getData(i, avatarNumbers)
+        avatar: avatarNumbers[i]
       },
 
       offer: {
         title: 'заголовок предложения',
         address: getLocationCoordinates(600, 350),
         price: prices[arrayRandElement(prices)],
-        type: getData(3, offerTypes),
+        type: offerTypes[i],
         rooms: rooms[arrayRandElement(rooms)],
         checkin: checkinsCheckouts[arrayRandElement(checkinsCheckouts)],
         checkout: checkinsCheckouts[arrayRandElement(checkinsCheckouts)],
@@ -83,8 +89,8 @@ var createMock = function () {
       },
 
       location: {
-        x: getRanbomNumber(PIN_W_X, PIN_W_Y) - PIN_TAIL_X + 'px',
-        y: getRanbomNumber(PIN_H_X, PIN_H_Y) - PIN_TAIL_Y + 'px'
+        x: getRanbomNumber(pinsCoordinates.PIN_W_X, pinsCoordinates.PIN_W_Y) - pinsCoordinates.PIN_TAIL_X + 'px',
+        y: getRanbomNumber(pinsCoordinates.PIN_H_X, pinsCoordinates.PIN_H_Y) - pinsCoordinates.PIN_TAIL_Y + 'px'
       }
     };
     mocks.push(mock);
@@ -122,7 +128,7 @@ var pinCoordinateLeft = parseInt(mapPinMain.style.left, 10);
 var pinCoordinateTop = parseInt(mapPinMain.style.top, 10);
 
 
-address.value = (pinCoordinateLeft + MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + MAIN_PIN_TOP);
+address.value = (pinCoordinateLeft + pinsCoordinates.MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + pinsCoordinates.MAIN_PIN_TOP);
 
 // Делаем все элементы формы неактивными
 formElements.forEach(function (input) {
@@ -136,20 +142,20 @@ var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
   formElements.forEach(function (input) {
     input.removeAttribute('disabled');
-    address.setAttribute('disabled', 'disabled');
+    address.setAttribute('readonly', 'readonly');
   });
 };
 
 // Активация по ЛКМ
 var onPinClick = function (evt) {
-  if (evt.which === LEFT_MOUSE_BUTTON) {
+  if (evt.which === controlsEvents.LEFT_MOUSE_BUTTON) {
     activateForm();
   }
 };
 
 // Активация по Enter
 var onEnterPress = function (evt) {
-  if (evt.key === ENTER_KEY) {
+  if (evt.key === controlsEvents.ENTER_KEY) {
     activateForm();
   }
 };
