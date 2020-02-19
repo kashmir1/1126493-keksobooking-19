@@ -136,6 +136,7 @@ var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
   formElements.forEach(function (input) {
     input.removeAttribute('disabled');
+    address.setAttribute('disabled', 'disabled');
   });
 };
 
