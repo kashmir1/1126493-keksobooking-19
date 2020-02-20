@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var mocks = [];
 
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
@@ -20,7 +19,7 @@
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < window.data.OBJECT_QUANTITY; i++) {
-    fragment.appendChild(movePin(mocks[i]));
+    fragment.appendChild(movePin(window.data.mocks[i]));
   }
 
   window.pins = {
