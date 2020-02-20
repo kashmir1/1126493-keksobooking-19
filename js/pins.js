@@ -17,15 +17,14 @@
       pinElement.querySelector('img').src = window.data.mocks[i].author.avatar;
       pinElement.querySelector('img').alt = window.data.mocks[i].offer.title;
       fragment.appendChild(pinElement);
+      mapPins.appendChild(fragment);
     }
   };
 
-  window.backend.load(generatePin);
+  window.load.load(generatePin);
 
   window.pins = {
     mapPins: mapPins,
     fragment: fragment
   };
 })();
-
-

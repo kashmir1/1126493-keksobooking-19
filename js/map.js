@@ -21,7 +21,6 @@
   // Функция аткивации окна
   var activateForm = function () {
     advMap.classList.remove('map--faded');
-    window.pins.mapPins.appendChild(window.pins.fragment);
     adForm.classList.remove('ad-form--disabled');
     formElements.forEach(function (input) {
       input.removeAttribute('disabled');

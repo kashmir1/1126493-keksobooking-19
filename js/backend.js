@@ -23,7 +23,7 @@
     xhr.send();
   };
 
-  window.backend = {
+  window.load = {
     load: load,
   };
 
