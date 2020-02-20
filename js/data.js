@@ -39,7 +39,7 @@
   // Создаем объекты и записываем в массив
   var createMock = function () {
     for (var i = 0; i < OBJECT_QUANTITY; i++) {
-      var mock = {
+      mocks[i] = {
         author: {
           avatar: 'img/avatars/user0' + (i + 1) + '.png'
         },
@@ -62,7 +62,7 @@
           y: window.utils.getRanbomNumber(PinsCoordinates.PIN_HEIGHT_X, PinsCoordinates.PIN_HEIGHT_Y) - PinsCoordinates.PIN_TAIL_Y + 'px'
         }
       };
-      mocks.push(mock);
+      // mocks.push(mock);
     }
     return mocks;
   };
@@ -72,7 +72,8 @@
     OBJECT_QUANTITY: OBJECT_QUANTITY,
     PinsCoordinates: PinsCoordinates,
     ControlsEvents: ControlsEvents,
-    mocks: mocks
+    mocks: mocks,
+    createMock: createMock()
   };
 
 })();
