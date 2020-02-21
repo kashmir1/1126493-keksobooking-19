@@ -13,7 +13,7 @@
     return String(x) + ', ' + String(y);
   };
 
-  window.util = {
+  window.utils = {
     getRanbomNumber: getRanbomNumber,
     arrayRandElement: arrayRandElement,
     getLocationCoordinates: getLocationCoordinates

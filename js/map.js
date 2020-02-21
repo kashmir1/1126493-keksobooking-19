@@ -11,7 +11,7 @@
   var pinCoordinateTop = parseInt(mapPinMain.style.top, 10);
 
 
-  address.value = (pinCoordinateLeft + window.data.pinsCoordinates.MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + window.data.pinsCoordinates.MAIN_PIN_TOP);
+  address.value = (pinCoordinateLeft + window.data.PinsCoordinates.MAIN_PIN_LEFT) + ', ' + (pinCoordinateTop + window.data.PinsCoordinates.MAIN_PIN_TOP);
 
   // Делаем все элементы формы неактивными
   formElements.forEach(function (input) {
@@ -21,7 +21,6 @@
   // Функция аткивации окна
   var activateForm = function () {
     advMap.classList.remove('map--faded');
-    window.pins.mapPins.appendChild(window.pins.fragment);
     adForm.classList.remove('ad-form--disabled');
     formElements.forEach(function (input) {
       input.removeAttribute('disabled');
@@ -31,14 +30,14 @@
 
   // Активация по ЛКМ
   var onPinClick = function (evt) {
-    if (evt.which === window.data.controlsEvents.LEFT_MOUSE_BUTTON) {
+    if (evt.which === window.data.ControlsEvents.LEFT_MOUSE_BUTTON) {
       activateForm();
     }
   };
 
   // Активация по Enter
   var onEnterPress = function (evt) {
-    if (evt.key === window.data.controlsEvents.ENTER_KEY) {
+    if (evt.key === window.data.ControlsEvents.ENTER_KEY) {
       activateForm();
     }
   };
