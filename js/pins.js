@@ -2,10 +2,10 @@
 
 (function () {
 
+  var PINS_AMOUNT = 5;
+
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content;
-
-  // var fragment = document.createDocumentFragment();
 
   var generatePin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -19,11 +19,12 @@
   var successHandler = function (pins) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < window.data.OBJECT_QUANTITY; i++) {
+    for (var i = 0; i < PINS_AMOUNT; i++) {
       fragment.appendChild(generatePin(pins[i]));
     }
     mapPins.appendChild(fragment);
   };
+
 
   window.load(successHandler);
 
