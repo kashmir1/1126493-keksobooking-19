@@ -2,29 +2,33 @@
 
 (function () {
 
+  var PINS_AMOUNT = 5;
+
   var mapPins = document.querySelector('.map__pins');
-  var pinTemplate = document.querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
+  var pinTemplate = document.querySelector('#pin').content;
 
-  var fragment = document.createDocumentFragment();
-
-  var generatePin = function () {
-    for (var i = 0; i < window.data.OBJECT_QUANTITY; i++) {
-      var pinElement = pinTemplate.cloneNode(true);
-      pinElement.style.left = window.data.mocks[i].location.x;
-      pinElement.style.top = window.data.mocks[i].location.y;
-      pinElement.querySelector('img').src = window.data.mocks[i].author.avatar;
-      pinElement.querySelector('img').alt = window.data.mocks[i].offer.title;
-      fragment.appendChild(pinElement);
-      mapPins.appendChild(fragment);
-    }
+  var generatePin = function (pin) {
+    var pinElement = pinTemplate.cloneNode(true);
+    pinElement.querySelector('.map__pin').style.left = pin.location.x + 'px';
+    pinElement.querySelector('.map__pin').style.top = pin.location.y + 'px';
+    pinElement.querySelector('img').src = pin.author.avatar;
+    pinElement.querySelector('img').alt = pin.offer.title;
+    return pinElement;
   };
 
-  window.load.load(generatePin);
+  var successHandler = function (pins) {
+    var fragment = document.createDocumentFragment();
 
-  window.pins = {
+    for (var i = 0; i < PINS_AMOUNT; i++) {
+      fragment.appendChild(generatePin(pins[i]));
+    }
+    mapPins.appendChild(fragment);
+  };
+
+
+  window.load(successHandler);
+
+  window.userpins = {
     mapPins: mapPins,
-    fragment: fragment
   };
 })();

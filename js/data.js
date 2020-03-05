@@ -14,7 +14,7 @@
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
 
-  var OBJECT_QUANTITY = 8;
+  var OBJECT_QUANTITY = 7;
 
   // Координаты для вставки метки за вычетом острого конца
   var PinsCoordinates = {
