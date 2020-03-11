@@ -127,6 +127,8 @@ var infoTemplateElement = document.querySelector('#card').content;
 var getInfoAdElement = function (element) {
   var infoElement = infoTemplateElement.cloneNode(true);
 
+  // Добвляет css свойства
+
   infoElement.querySelector('.popup__avatar').src = element.author.avatar;
   infoElement.querySelector('.popup__title').textContent = element.offer.title;
   infoElement.querySelector('.popup__text--address').textContent = element.offer.address;
@@ -135,12 +137,16 @@ var getInfoAdElement = function (element) {
   infoElement.querySelector('.popup__text--capacity').textContent = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
   infoElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + element.offer.checkin + ' , выезд до ' + element.offer.checkout;
 
+  if (element.offer.features.length === 0) {
+    infoElement.querySelector('.popup__features').hidden = true;
+  }
+
   infoElement.querySelector('.popup__features').innerHTML = '';
 
   for (var i = 0; i < element.offer.features.length; i++) {
-    var createNewElement = document.createElement('li');
-    createNewElement.className = 'popup__feature popup__feature--' + element.offer.features[i];
-    infoElement.querySelector('.popup__features').appendChild(createNewElement);
+    var newElement = document.createElement('li');
+    newElement.className = 'popup__feature popup__feature--' + element.offer.features[i];
+    infoElement.querySelector('.popup__features').appendChild(newElement);
   }
 
   if (element.offer.description.length === 0) {
@@ -209,10 +215,9 @@ var setActiveCondition = function () {
   roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
   checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
   checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
-  typeElement.addEventListener('change', onRoomTypeChangePrice);
-
-  mapPinsElements = mapPinsElement.querySelectorAll('[type=button]');
-  renderPinsInfo();
+  typeElement.addEventListener('change', onRoomTypeChange);
+  mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
+  addPinsClickListener();
 };
 
 var onMainPinMousedown = function (evt) {
@@ -243,67 +248,64 @@ var roomsOptionsToBeEnabled = {
   '100': [NO_GEUSTS_OPTION_INDEX]
 };
 
-var setOptionsDisabledExceptDefault = function (elements) {
-  for (var i = 0; i < elements.length - 1; i++) {
-    elements[i].setAttribute('disabled', 'disabled');
-  }
-};
+// Добавляем disabled
 
-setOptionsDisabledExceptDefault(roomsCapacityOptionsElements);
-
-var disableAllOptions = function (elements) {
-  for (var i = 0; i < elements.length; i++) {
+var disableOptions = function (elements, arrayLengths) {
+  for (var i = 0; i < arrayLengths; i++) {
     if (!elements[i].hasAttribute('disabled')) {
       elements[i].setAttribute('disabled', 'disabled');
     }
   }
 };
 
+disableOptions(roomsCapacityOptionsElements, (roomsCapacityOptionsElements.length - 1));
+
 var onRoomNumberSelectorChanged = function () {
-  disableAllOptions(roomsCapacityOptionsElements);
+  disableOptions(roomsCapacityOptionsElements, roomsCapacityOptionsElements.length);
   var roomNumberValue = roomNumberElement.value;
 
-  for (var j = 0; j < roomsOptionsToBeEnabled[roomNumberValue].length; j++) {
-    var index = roomsOptionsToBeEnabled[roomNumberValue][j];
+  for (var i = 0; i < roomsOptionsToBeEnabled[roomNumberValue].length; i++) {
+    var index = roomsOptionsToBeEnabled[roomNumberValue][i];
     roomsCapacityOptionsElements[index].removeAttribute('disabled');
   }
   roomCapacityElement.selectedIndex = roomsOptionsToBeEnabled[roomNumberValue][0];
 };
 
-var mapPopUp = [];
-var renderPinsInfo = function () {
+var pinPopUp;
+
+
+var removePopUpAndEscapeListener = function () {
+  pinPopUp.remove();
+  document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+var addPinsClickListener = function () {
   for (var i = 0; i < mapPinsElements.length; i++) {
     addClickListener(i);
   }
 };
 
-var addClickListener = function (i) {
-  var removePopUpElement = function () {
-    mapPopUp[0].remove();
-  };
 
+var onDocumentKeydown = function (evt) {
+  if (evt.key === ESC_KEY) {
+    removePopUpAndEscapeListener();
+  }
+};
+
+var addClickListener = function (i) {
   mapPinsElements[i].addEventListener('click', function () {
-    if (mapPopUp.length !== 0) {
-      removePopUpElement();
+    if (pinPopUp !== undefined) {
+      pinPopUp.remove();
     }
 
-    document.querySelector('.map__filters-container').before(getInfoAdElement(ads[i]));
-    mapPopUp = document.querySelectorAll('.map__card');
+    pinPopUp = getInfoAdElement(ads[i]).children[0];
 
+    document.querySelector('.map__filters-container').before(pinPopUp);
     var mapPopUpCloseElement = document.querySelector('.popup__close');
     mapPopUpCloseElement.addEventListener('click', function () {
-      removePopUpElement();
+      removePopUpAndEscapeListener();
     });
-
-    window.addEventListener('keydown', function (evt) {
-      if (evt.key === ESC_KEY) {
-        removePopUpElement();
-      }
-    });
-
-    document.querySelector('.popup__close').addEventListener('click', function () {
-      mapPopUp[0].remove();
-    });
+    document.addEventListener('keydown', onDocumentKeydown);
   });
 };
 
@@ -330,7 +332,7 @@ var minPriceForTypes = {
 var typeElement = document.querySelector('#type');
 var priceInputElement = document.querySelector('#price');
 
-var onRoomTypeChangePrice = function () {
+var onRoomTypeChange = function () {
   var typeValue = typeElement.value;
   priceInputElement.min = minPriceForTypes[typeValue];
   priceInputElement.placeholder = minPriceForTypes[typeValue];
