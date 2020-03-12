@@ -18,16 +18,10 @@
   var ENTER_KEY = 'Enter';
   var LEFT_BUTTON_MOUSE = 0;
 
-  var MAIN_PIN_HALF_WIDTH = 32;
-  var MAIN_PIN_HEIGHT_WITHOUT_POINTER = 31;
-
   var mapPinElement = document.querySelector('.map');
   var mapPinsElement = document.querySelector('.map__pins');
   var adressInputElement = document.querySelector('#address');
   var mainMapPinElement = document.querySelector('.map__pin--main');
-
-  adressInputElement.value = (mainMapPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER) + ', ' + (mainMapPinElement.offsetLeft + MAIN_PIN_HALF_WIDTH);
-
 
   // Устанавливаем disabled
   var setDisableAttribute = function (elements) {
