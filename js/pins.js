@@ -2,65 +2,78 @@
 
 (function () {
 
-  // Отрисовывать 5 ближайших меток
-  var PINS_AMOUNT = 5;
+  var ESC_KEY = 'Escape';
+  var BUTTON_MAP_PIN_WIDTH = 50;
+  var BUTTON_MAP_PIN_HEIGHT = 70;
 
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+  var mapPinsElements;
 
-  var mainPin = document.querySelector('.map__pin--main');
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var mapPinsElement = document.querySelector('.map__pins');
 
-  /* -------------------------Функции------------------------- */
 
-  // Создает метку
-  var createPin = function (blank, offerNum) {
-    var pin = pinTemplate.cloneNode(true);
-    var pinImage = pin.querySelector('img');
+  window.setPinsActiveCondition = function () {
 
-    pin.dataset.offerNum = offerNum;
-    pin.style.top = (blank.location.y - PIN_HEIGHT) + 'px';
-    pin.style.left = (blank.location.x - PIN_WIDTH / 2) + 'px';
-    pinImage.src = blank.author.avatar;
-    pinImage.alt = blank.offer.title;
+    var adTemplateElement = document.querySelector('#pin').content;
 
-    return pin;
-  };
+    var renderAdPin = function (ad) {
+      var adElement = adTemplateElement.cloneNode(true);
+      var mapPinStyle = 'left:' + (ad.location.x - (BUTTON_MAP_PIN_WIDTH / 2)) + 'px; top: ' + (ad.location.y - BUTTON_MAP_PIN_HEIGHT) + 'px;';
+      adElement.querySelector('img').src = ad.author.avatar;
+      adElement.querySelector('img').alt = ad.offer.title;
+      adElement.querySelector('.map__pin').style.cssText = mapPinStyle;
 
-  // Отрисовывает метки на карте
-  var renderPins = function (container, data) {
-    var offerNum = 0;
-    var pinNum = 0;
-    while (pinNum < PINS_AMOUNT && offerNum < data.length) {
-      if (data[offerNum].offer) {
-        container.appendChild(createPin(data[pinNum], offerNum));
-        pinNum++;
+      return adElement;
+    };
+
+    var createAdPinsFragment = function () {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < window.ads.length; i++) {
+        fragment.appendChild(renderAdPin(window.ads[i]));
       }
-      offerNum++;
-    }
-  };
+      mapPinsElement.appendChild(fragment);
+    };
+    createAdPinsFragment();
 
-  // Удаляет метки с карты
-  var clearPins = function () {
-    var pins = window.map.map.querySelectorAll('button[type="button"].map__pin');
-    pins.forEach(function (pin) {
-      window.map.map.removeChild(pin);
-    });
-  };
+    mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
 
-  // Сбрасывает главную метку
-  var resetMainPin = function () {
-    mainPin.style.top = '375px';
-    mainPin.style.left = '570px';
-  };
+    var pinPopUp;
 
-  /* -------------------------Экспорт------------------------- */
+    var removePopUpAndEscapeListener = function () {
+      pinPopUp.remove();
+      document.removeEventListener('keydown', onDocumentKeydown);
+    };
 
-  window.pins = {
-    mainPin: mainPin,
-    renderPins: renderPins,
-    clearPins: clearPins,
-    resetMainPin: resetMainPin
+
+    var onDocumentKeydown = function (evt) {
+      if (evt.key === ESC_KEY) {
+        removePopUpAndEscapeListener();
+      }
+    };
+
+    var addClickListener = function (i) {
+      mapPinsElements[i].addEventListener('click', function () {
+        if (pinPopUp !== undefined) {
+          pinPopUp.remove();
+        }
+
+        pinPopUp = window.getInfoAdElement(window.ads[i]).children[0];
+
+        document.querySelector('.map__filters-container').before(pinPopUp);
+        var mapPopUpCloseElement = document.querySelector('.popup__close');
+        mapPopUpCloseElement.addEventListener('click', function () {
+          removePopUpAndEscapeListener();
+        });
+        document.addEventListener('keydown', onDocumentKeydown);
+      });
+    };
+
+
+    var addPinsClickListener = function () {
+      for (var i = 0; i < mapPinsElements.length; i++) {
+        addClickListener(i);
+      }
+    };
+    addPinsClickListener();
   };
 
 })();
