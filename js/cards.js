@@ -1,65 +1,84 @@
 'use strict';
 
 (function () {
-  var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  // Делает список удобств карточки
-  var renderCardFeatures = function (cardFeatures) {
-    var featuresFragment = document.createDocumentFragment();
-    for (var featuresIndex = 0; featuresIndex < cardFeatures.length; featuresIndex++) {
-      var child = document.createElement('li');
-      child.classList.add('popup__feature');
-      child.classList.add('popup__feature--' + cardFeatures[featuresIndex]);
-      featuresFragment.appendChild(child);
-    }
-    return featuresFragment;
-  };
+  var MAIN_MAP_PIN_AND_POINTER_HEIGHT = 84;
+  var BUTTON_MAIN_MAP_PIN_HALF_WIDTH = 32;
+  var MAX_BLOCK_WIDTH = 1200;
+  var BLOCK_MAX_WIDTH_FOR_PIN = MAX_BLOCK_WIDTH - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
+  var BLOCK_MIN_WIDTH_FOR_PIN = 0 - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
+  var BLOCK_MAX_HEIGHT_FOR_PIN = 630;
+  var BLOCK_MIN_HEIGHT_FOR_PIN = 130;
 
-  // Делает список фотографик карточки
-  var renderCardPhotos = function (offerPhotos) {
-    var photosFragment = document.createDocumentFragment();
-    for (var photoNum = 0; photoNum < offerPhotos.length; photoNum++) {
-      var child = document.createElement('img');
-      child.classList.add('popup__photo');
-      child.src = offerPhotos[photoNum];
-      child.alt = 'Фотография жилья';
-      child.width = '45';
-      child.height = '40';
-      photosFragment.appendChild(child);
-    }
-    return photosFragment;
-  };
+  var mainPinElement = document.querySelector('.map__pin--main');
+  var adressInputElement = document.querySelector('#address');
 
-  // Очищает и заполняем указанными элементами
-  var fillCardElements = function (popupParent, childs) {
-    popupParent.innerHTML = '';
-    popupParent.appendChild(childs);
-  };
+  mainPinElement.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
-  // Создает карточку объявления
-  var makeCard = function (cardData) {
-    var card = mapCardTemplate.cloneNode(true);
-    var housingTypesMap = {flat: 'Квартира', bungalo: 'Бунгало', house: 'Дом', palace: 'Дворец'};
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+    var xPosition;
+    var yPosition;
 
-    card.querySelector('.popup__title').textContent = cardData.offer.title;
-    card.querySelector('.popup__text--address').textContent = cardData.offer.address;
-    card.querySelector('.popup__text--price').textContent = cardData.offer.price + '₽/ночь';
-    card.querySelector('.popup__type').textContent = housingTypesMap[cardData.offer.type];
-    card.querySelector('.popup__text--capacity').textContent = cardData.offer.rooms + ' комнаты для ' + cardData.offer.guests + ' гостей';
-    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + cardData.offer.checkin + ', выезд до ' + cardData.offer.checkout;
-    card.querySelector('.popup__description').textContent = cardData.offer.description;
-    card.querySelector('.popup__avatar').src = cardData.author.avatar;
+    var setMainPinPosition = function (element) {
+      var shift = {
+        x: startCoords.x - element.clientX,
+        y: startCoords.y - element.clientY
+      };
 
-    fillCardElements(card.querySelector('.popup__features'), renderCardFeatures(cardData.offer.features));
-    fillCardElements(card.querySelector('.popup__photos'), renderCardPhotos(cardData.offer.photos));
+      startCoords = {
+        x: element.clientX,
+        y: element.clientY
+      };
 
-    return card;
-  };
+      yPosition = mainPinElement.offsetTop - shift.y;
+      xPosition = mainPinElement.offsetLeft - shift.x;
 
-  /* -------------------------Экспорт------------------------- */
+      mainPinElement.style.top = yPosition + 'px';
+      mainPinElement.style.left = xPosition + 'px';
+      adressInputElement.value = (yPosition + MAIN_MAP_PIN_AND_POINTER_HEIGHT) + ', ' + (xPosition + BUTTON_MAIN_MAP_PIN_HALF_WIDTH);
 
-  window.card = {
-    makeCard: makeCard
-  };
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+
+      setMainPinPosition(moveEvt);
+
+      if (xPosition > BLOCK_MAX_WIDTH_FOR_PIN) {
+        mainPinElement.style.left = BLOCK_MAX_WIDTH_FOR_PIN + 'px';
+      }
+
+      if (xPosition < BLOCK_MIN_WIDTH_FOR_PIN) {
+        mainPinElement.style.left = BLOCK_MIN_WIDTH_FOR_PIN + 'px';
+      }
+
+      if (yPosition > BLOCK_MAX_HEIGHT_FOR_PIN) {
+        mainPinElement.style.top = BLOCK_MAX_HEIGHT_FOR_PIN + 'px';
+      }
+
+      if (yPosition < BLOCK_MIN_HEIGHT_FOR_PIN) {
+        mainPinElement.style.top = BLOCK_MIN_HEIGHT_FOR_PIN + 'px';
+      }
+
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      setMainPinPosition(upEvt);
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
 
 })();

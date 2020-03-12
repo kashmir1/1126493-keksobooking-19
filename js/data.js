@@ -1,79 +1,73 @@
 'use strict';
 
-// Модуль данных
-
 (function () {
-  var prices = [1000, 20000, 40000];
-  var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
-  var rooms = [1, 2, 3, 4, 5];
-  var checkinsCheckouts = ['12:00', '13:00', '13:00'];
-  var featuresList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var photosList = [
-    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ];
+  var AD_QUANTITY = 8;
+  var AVATAR_IMAGE_FIRST_DIGIT = 0;
+  var ADS_TITLES = ['Лучшее в мире жилье', 'Бюджетный вариант', 'Для семейной пары с детьми'];
+  var OFFER_PRICE_MAX = 1000000;
+  var OFFER_PRICE_MIN = 1;
+  var OFFERS_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+  var ROOMS_QUANTITY_MIN = 1;
+  var ROOMS_QUANTITY_MAX = 5;
+  var GUESTS_QUANTITY_MIN = 0;
+  var GUESTS_QUANTITY_MAX = 7;
+  var CHECKINS_TIMES = ['12:00', '13:00', '14:00'];
+  var CHECKOUTS_TIMES = ['12:00', '13:00', '14:00'];
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var OFFERS_DESCIPTIONS = ['отличные аппартаменты!', 'Без домашних животных!'];
+  var OFFERS_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var LOCATION_X_MAX = 1200;
+  var LOCATION_X_MIN = 0;
+  var LOCATION_Y_MAX = 630;
+  var LOCATION_Y_MIN = 130;
 
-  var OBJECT_QUANTITY = 7;
 
-  // Координаты для вставки метки за вычетом острого конца
-  var PinsCoordinates = {
-    PIN_WIDTH_X: 0,
-    PIN_WIDTH_Y: 1200,
-    PIN_HEIGHT_X: 130,
-    PIN_HEIGHT_Y: 630,
-    PIN_TAIL_X: 20,
-    PIN_TAIL_Y: 40,
-    MAIN_PIN_LEFT: 32 / 2,
-    MAIN_PIN_TOP: 82
+  var getRandomInteger = function (min, max) {
+    var rand = min + Math.random() * (max + 1 - min);
+    return Math.floor(rand);
   };
 
-  var ControlsEvents = {
-    LEFT_MOUSE_BUTTON: 1,
-    ENTER_KEY: 'Enter'
+
+  var getRandomArrayLength = function (items) {
+    return items.slice(getRandomInteger(0, items.length));
   };
 
-  // Создаем пустой моссив моков
-  var mocks = [];
 
-  // Создаем объекты и записываем в массив
-  var createMock = function () {
-    for (var i = 0; i < OBJECT_QUANTITY; i++) {
-      var mock = {
+  var getRandomElement = function (elements) {
+    return elements[getRandomInteger(0, elements.length - 1)];
+  };
+
+  var interimAds = [];
+  var createAdsList = function (objectCount) {
+    for (var i = 0; i < objectCount; i++) {
+      var randomLocationX = getRandomInteger(LOCATION_X_MIN, LOCATION_X_MAX);
+      var randomLocationY = getRandomInteger(LOCATION_Y_MIN, LOCATION_Y_MAX);
+      interimAds.push({
         author: {
-          avatar: 'img/avatars/user0' + (i + 1) + '.png'
+          avatar: 'img/avatars/user' + AVATAR_IMAGE_FIRST_DIGIT + (i + 1) + '.png'
         },
 
         offer: {
-          title: 'заголовок предложения',
-          address: window.utils.getLocationCoordinates(600, 350),
-          price: prices[window.utils.arrayRandElement(prices)],
-          type: offerTypes[i],
-          rooms: rooms[window.utils.arrayRandElement(rooms)],
-          checkin: checkinsCheckouts[window.utils.arrayRandElement(checkinsCheckouts)],
-          checkout: checkinsCheckouts[window.utils.arrayRandElement(checkinsCheckouts)],
-          features: featuresList[window.utils.arrayRandElement(featuresList)],
-          description: 'Описание',
-          photos: photosList[window.utils.arrayRandElement(photosList)],
+          title: getRandomElement(ADS_TITLES),
+          address: randomLocationX + ' , ' + randomLocationY,
+          price: getRandomInteger(OFFER_PRICE_MIN, OFFER_PRICE_MAX),
+          type: getRandomElement(OFFERS_TYPES),
+          rooms: getRandomInteger(ROOMS_QUANTITY_MIN, ROOMS_QUANTITY_MAX),
+          guests: getRandomInteger(GUESTS_QUANTITY_MIN, GUESTS_QUANTITY_MAX),
+          checkin: getRandomElement(CHECKINS_TIMES),
+          checkout: getRandomElement(CHECKOUTS_TIMES),
+          features: getRandomArrayLength(FEATURES),
+          description: getRandomElement(OFFERS_DESCIPTIONS),
+          photos: getRandomArrayLength(OFFERS_PHOTOS)
         },
-
         location: {
-          x: window.utils.getRanbomNumber(PinsCoordinates.PIN_WIDTH_X, PinsCoordinates.PIN_WIDTH_Y) - PinsCoordinates.PIN_TAIL_X + 'px',
-          y: window.utils.getRanbomNumber(PinsCoordinates.PIN_HEIGHT_X, PinsCoordinates.PIN_HEIGHT_Y) - PinsCoordinates.PIN_TAIL_Y + 'px'
+          x: randomLocationX,
+          y: randomLocationY
         }
-      };
-      mocks.push(mock);
+      });
     }
-    return mocks;
-  };
-  createMock();
-
-  window.data = {
-    OBJECT_QUANTITY: OBJECT_QUANTITY,
-    PinsCoordinates: PinsCoordinates,
-    ControlsEvents: ControlsEvents,
-    mocks: mocks,
-    createMock: createMock()
   };
 
+  createAdsList(AD_QUANTITY);
+  window.ads = interimAds;
 })();
