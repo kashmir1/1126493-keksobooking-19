@@ -8,9 +8,10 @@
 
   var mapPinsElements;
 
-  window.setPinsActiveCondition = function () {
+  var mapPinsElement = document.querySelector('.map__pins');
 
-    var mapPinsElement = document.querySelector('.map__pins');
+
+  window.setPinsActiveCondition = function () {
 
     var adTemplateElement = document.querySelector('#pin').content;
 
@@ -34,6 +35,7 @@
     createAdPinsFragment();
 
     mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
+
     var pinPopUp;
 
     var removePopUpAndEscapeListener = function () {

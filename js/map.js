@@ -20,6 +20,22 @@
 
   var mainMapPinElement = document.querySelector('.map__pin--main');
 
+  var successHandler = function (response) {
+    window.ads = response;
+    window.setPinsActiveCondition();
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
 
   var setDisableAttribute = function (elements) {
     for (var i = 0; i < elements.length; i++) {
@@ -35,7 +51,7 @@
   setDisableAttribute(mapSelectFieldsetElements);
 
   var setActiveCondition = function () {
-    window.setPinsActiveCondition();
+    window.load(successHandler, errorHandler);
     mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
     mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
     window.setFormActiveCondition();
@@ -121,5 +137,7 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.ads = [];
 
 })();
