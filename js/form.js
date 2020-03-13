@@ -92,12 +92,6 @@
       checkinSelectElement.value = checkoutSelectElement.value;
     };
 
-    var onRoomTypeChange = function () {
-      typeValue = typeElement.value;
-      priceInputElement.min = minPriceForTypes[typeValue];
-      priceInputElement.placeholder = minPriceForTypes[typeValue];
-    };
-
 
     var onSubmitButtonClick = function () {
       if (!titleInputElement.checkValidity()) {
@@ -108,20 +102,33 @@
       }
     };
 
-    var onInputChanged = function (evt) {
-      if (evt.target.checkValidity()) {
-        evt.target.style.borderColor = 'silver';
+    var changeBorderColor = function (element) {
+      if (element.checkValidity()) {
+        element.style.borderColor = 'silver';
       }
     };
 
+    var onRoomTypeChange = function () {
+      typeValue = typeElement.value;
+      priceInputElement.min = minPriceForTypes[typeValue];
+      priceInputElement.placeholder = minPriceForTypes[typeValue];
+      changeBorderColor(priceInputElement);
+    };
+
+    var onInputPriceInputed = function () {
+      changeBorderColor(priceInputElement);
+    };
+
+    var onInputTitleInputed = function () {
+      changeBorderColor(titleInputElement);
+    };
 
     roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
     checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
     checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
     typeElement.addEventListener('change', onRoomTypeChange);
     submitButton.addEventListener('click', onSubmitButtonClick);
-    titleInputElement.addEventListener('input', onInputChanged);
-    priceInputElement.addEventListener('input', onInputChanged);
-
+    titleInputElement.addEventListener('input', onInputTitleInputed);
+    priceInputElement.addEventListener('input', onInputPriceInputed);
   };
 })();
