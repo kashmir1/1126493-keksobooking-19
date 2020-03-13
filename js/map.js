@@ -15,14 +15,19 @@
   var mainPinElement = document.querySelector('.map__pin--main');
   var adressInputElement = document.querySelector('#address');
 
-  var formElement = document.querySelector('.ad-form');
-  var fieldsetElements = formElement.querySelectorAll('fieldset');
-
   var mainMapPinElement = document.querySelector('.map__pin--main');
 
   var successHandler = function (response) {
-    window.ads = response;
+    window.map.ads = response;
     window.setPinsActiveCondition();
+  };
+
+  var onDocumentKeydown = function (evt) {
+    var removeErrorMessage = function () {
+      document.querySelector('div').hidden = true;
+    };
+    window.util.isEscEvent(evt, removeErrorMessage);
+    document.removeEventListener('keydown', onDocumentKeydown);
   };
 
   var errorHandler = function (errorMessage) {
@@ -34,26 +39,16 @@
     node.style.fontSize = '30px';
 
     node.textContent = errorMessage;
+
     document.body.insertAdjacentElement('afterbegin', node);
+
+    document.addEventListener('keydown', onDocumentKeydown);
   };
-
-  var setDisableAttribute = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].setAttribute('disabled', 'disabled');
-    }
-  };
-
-  setDisableAttribute(fieldsetElements);
-
-  var formMapElement = document.querySelector('.map__filters');
-  formMapElement.setAttribute('disabled', 'disabled');
-  var mapSelectFieldsetElements = formMapElement.querySelectorAll('select, fieldset');
-  setDisableAttribute(mapSelectFieldsetElements);
 
   var setActiveCondition = function () {
     window.load(successHandler, errorHandler);
-    mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
-    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
+    /* mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown); */
     window.setFormActiveCondition();
   };
 
@@ -72,9 +67,6 @@
   };
 
   mainMapPinElement.addEventListener('keydown', onMainPinKeydown);
-
-  adressInputElement.value = (mainPinElement.offsetLeft + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (mainPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER);
-
 
   var blockMaxWidthForPin = MAX_BLOCK_WIDTH - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
   var blockMinWidthForPin = 0 - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
@@ -138,6 +130,10 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  window.ads = [];
+  window.map = {
+    startAdress: (mainPinElement.offsetLeft + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (mainPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER),
+    ads: []
+  };
+
 
 })();
