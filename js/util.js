@@ -2,13 +2,17 @@
 
 (function () {
 
-  var ESC_KEY = 'Escape';
-
   window.util = {
     isEscEvent: function (evt, action) {
-      if (evt.key === ESC_KEY) {
+      if (evt.key === window.constants.ESC_KEY) {
         action();
       }
+    },
+    removePinsElements: function () {
+      window.pins.mapPinsElements.forEach(function (currentValue, index) {
+        window.pins.mapPinsElements[index].remove();
+      }
+      );
     }
   };
 })();

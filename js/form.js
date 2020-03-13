@@ -13,6 +13,14 @@
   var MIN_PRICE_FOR_HOUSE = 5000;
   var MIN_PRICE_FOR_PALACE = 10000;
 
+  var START_MAIN_PIN_LEFT_POSITION = 570;
+  var START_MAIN_PIN_TOP_POSITION = 375;
+
+  var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
+  var UPLOAD_METHOD = 'POST';
+
+  var DEFAULT_FORM_AVATAR_IMAGE = 'img/muffin-grey.svg';
+
 
   var roomsOptionsToBeEnabled = {
     '1': [ONE_GEUST_OPTION_INDEX],
@@ -31,10 +39,20 @@
   var formElement = document.querySelector('.ad-form');
   var fieldsetElements = formElement.querySelectorAll('fieldset');
 
-
+  var mainMapPinElement = document.querySelector('.map__pin--main');
   var mapPinElement = document.querySelector('.map');
 
   var adressInputElement = document.querySelector('#address');
+  var resetButtonElement = document.querySelector('.ad-form__reset');
+
+  var errorTemplate = document.querySelector('#error').content;
+  var succesTemplate = document.querySelector('#success').content;
+  var errorButtonElement = errorTemplate.querySelector('.error__button');
+
+  var previewPhotoElement = document.querySelector('.ad-form__photo');
+  var previewAvatarElement = document.querySelector('.ad-form-header__preview');
+
+  var main = document.querySelector('main');
 
   adressInputElement.value = window.map.startAdress;
 
@@ -74,14 +92,11 @@
 
     disableOptions(roomsCapacityOptionsElements, (roomsCapacityOptionsElements.length - 1));
 
+
     formElement.classList.remove('ad-form--disabled');
     mapPinElement.classList.remove('map--faded');
     for (var i = 0; i < fieldsetElements.length; i++) {
       fieldsetElements[i].removeAttribute('disabled');
-    }
-    formMapElement.querySelector('fieldset').removeAttribute('disabled');
-    for (var j = 0; j < mapSelectFieldsetElements.length; j++) {
-      mapSelectFieldsetElements[j].removeAttribute('disabled');
     }
     var onRoomNumberSelectorChanged = function () {
       disableOptions(roomsCapacityOptionsElements, roomsCapacityOptionsElements.length);
@@ -101,35 +116,31 @@
       checkinSelectElement.value = checkoutSelectElement.value;
     };
 
-
-    var onSubmitButtonClick = function () {
-      if (!titleInputElement.checkValidity()) {
-        titleInputElement.style.borderColor = 'red';
-      }
-      if (!priceInputElement.checkValidity()) {
-        priceInputElement.style.borderColor = 'red';
+    var changeBorderColor = function (element, check, color) {
+      if (element.checkValidity() === check) {
+        element.style.borderColor = color;
       }
     };
 
-    var changeBorderColor = function (element) {
-      if (element.checkValidity()) {
-        element.style.borderColor = 'silver';
-      }
+    var onSubmitButtonClicked = function () {
+      changeBorderColor(titleInputElement, false, 'red');
+      changeBorderColor(priceInputElement, false, 'red');
     };
 
-    var onRoomTypeChange = function () {
+
+    var onRoomTypeChanged = function () {
       typeValue = typeElement.value;
       priceInputElement.min = minPriceForTypes[typeValue];
       priceInputElement.placeholder = minPriceForTypes[typeValue];
-      changeBorderColor(priceInputElement);
+      changeBorderColor(priceInputElement, true, 'silver');
     };
 
     var onPriceInput = function () {
-      changeBorderColor(priceInputElement);
+      changeBorderColor(priceInputElement, true, 'silver');
     };
 
     var onTitleInput = function () {
-      changeBorderColor(titleInputElement);
+      changeBorderColor(titleInputElement, true, 'silver');
     };
 
     var setPageDeactive = function () {
@@ -139,43 +150,84 @@
       setDisableAttribute(fieldsetElements);
       setDisableAttribute(mapSelectFieldsetElements);
 
-      for (var l = 0; l < window.mapPinsElements.length; l++) {
-        window.mapPinsElements[l].remove();
-      }
+      formMapElement.reset();
+      formElement.reset();
 
+      mainMapPinElement.style.cssText = 'left:' + START_MAIN_PIN_LEFT_POSITION + 'px; top: ' + START_MAIN_PIN_TOP_POSITION + 'px;';
+      priceInputElement.placeholder = MIN_PRICE_FOR_BUNGALO;
+      previewPhotoElement.querySelector('img').hidden = true;
+      previewAvatarElement.querySelector('img').src = DEFAULT_FORM_AVATAR_IMAGE;
+
+      window.pins.removePopUp();
+
+      window.util.removePinsElements();
+
+
+      mainMapPinElement.addEventListener('mousedown', window.map.onMainPinMousedown);
+      mainMapPinElement.addEventListener('keydown', window.map.onMainPinKeydown);
       adressInputElement.value = window.map.startAdress;
+
+      document.removeEventListener('keydown', window.pins.onDocumentKeydown);
+      roomNumberElement.removeEventListener('change', onRoomNumberSelectorChanged);
+      checkinSelectElement.removeEventListener('change', onCheckinTimeSelectorChanged);
+      checkoutSelectElement.removeEventListener('change', onCheckoutTimeSelectorChanged);
+      window.filter.removeListener();
+      typeElement.removeEventListener('change', onRoomTypeChanged);
+      submitButton.removeEventListener('click', onSubmitButtonClicked);
+      resetButtonElement.removeEventListener('click', onResetButtonClicked);
+      titleInputElement.removeEventListener('input', onTitleInput);
+      priceInputElement.removeEventListener('input', onPriceInput);
+      window.adPhotoAndUserAvatarLoad.removeListeners();
     };
 
     var removeMessage = function (element) {
-      if (element !== null) {
+      if (element !== null && element !== undefined) {
         element.remove();
       }
     };
 
     var removeDocumentListeners = function () {
-      document.removeEventListener('keydown', onDocumentKeydown);
-      document.removeEventListener('click', onDocumentClick);
+      document.removeEventListener('keydown', onDocumentKeydownErrorCase);
+      document.removeEventListener('keydown', onDocumentKeydownSuccesCase);
+      document.removeEventListener('click', onDocumentClickSucccesCase);
+      document.removeEventListener('click', onDocumentClickErrorCase);
     };
 
-    var onDocumentKeydown = function (evt) {
-      removeMessage(document.querySelector('.success'));
-      removeMessage(document.querySelector('.error'));
-
-      window.util.isEscEvent(evt, removeMessage);
-
-
-      removeDocumentListeners();
+    var onDocumentKeydownSuccesCase = function (evt) {
+      if (evt.key === window.constants.ESC_KEY) {
+        removeMessage(document.querySelector('.success'));
+        removeDocumentListeners();
+      }
     };
 
-    var onDocumentClick = function () {
-      removeMessage(document.querySelector('.success'));
-      removeMessage(document.querySelector('.error'));
-
-
-      removeDocumentListeners();
+    var onDocumentKeydownErrorCase = function (evt) {
+      if (evt.key === window.constants.ESC_KEY) {
+        removeMessage(document.querySelector('.error'));
+        removeDocumentListeners();
+      }
     };
 
-    var errorButtonElement = document.querySelector('.error__button');
+    var checkClickEvent = function (evt, selectorMessageText, selectorMessageBlock) {
+      var messageText = document.querySelector(selectorMessageText);
+      var isClickInside = messageText.contains(evt.target);
+
+      if (!isClickInside) {
+        removeMessage(document.querySelector(selectorMessageBlock));
+        removeDocumentListeners();
+      }
+
+    };
+
+    var onDocumentClickSucccesCase = function (evt) {
+
+      checkClickEvent(evt, '.success__message', '.success');
+    };
+
+    var onDocumentClickErrorCase = function (evt) {
+
+      checkClickEvent(evt, '.error__message', '.error');
+    };
+
 
     var onErrorButtonClick = function () {
       removeMessage(document.querySelector('.error'));
@@ -183,41 +235,47 @@
       errorButtonElement.removeEventListener('click', onErrorButtonClick);
     };
 
-    var successHandler = function () {
-      var succesTemplate = document.querySelector('#success').content;
-      var successMessage = succesTemplate.cloneNode(true);
-      document.body.appendChild(successMessage.querySelector('div'));
-      formElement.reset();
 
-      document.addEventListener('keydown', onDocumentKeydown);
-      document.addEventListener('click', onDocumentClick);
+    var onSuccess = function () {
+      var successMessage = succesTemplate.cloneNode(true);
+      main.appendChild(successMessage.querySelector('div'));
+
+      document.addEventListener('keydown', onDocumentKeydownSuccesCase);
+      document.addEventListener('click', onDocumentClickSucccesCase);
       setPageDeactive();
     };
 
-    var errorHandler = function () {
-      var errorTemplate = document.querySelector('#error').content;
+
+    var onError = function () {
       var errorMessage = errorTemplate.cloneNode(true);
-      var main = document.querySelector('main');
       main.appendChild(errorMessage.querySelector('div'));
 
-      document.addEventListener('keydown', onDocumentKeydown);
-      document.addEventListener('click', onDocumentClick);
+      document.addEventListener('keydown', onDocumentKeydownErrorCase);
+      document.addEventListener('click', onDocumentClickErrorCase);
       errorButtonElement.addEventListener('click', onErrorButtonClick);
     };
 
-    var onSubmitButtonClicked = function (evt) {
-      window.upload(new FormData(formElement), successHandler, errorHandler);
+    var onFormSubmitted = function (evt) {
+      window.request(onSuccess, onError, UPLOAD_URL, UPLOAD_METHOD, new FormData(formElement));
       evt.preventDefault();
     };
 
-    formElement.addEventListener('submit', onSubmitButtonClicked);
+    var onResetButtonClicked = function () {
+      setPageDeactive();
+    };
 
+    resetButtonElement.addEventListener('click', onResetButtonClicked);
+
+    window.adPhotoAndUserAvatarLoad.addListeners();
+    window.filter.addListener();
+    formElement.addEventListener('submit', onFormSubmitted);
     roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
     checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
     checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
-    typeElement.addEventListener('change', onRoomTypeChange);
-    submitButton.addEventListener('click', onSubmitButtonClick);
+    typeElement.addEventListener('change', onRoomTypeChanged);
+    submitButton.addEventListener('click', onSubmitButtonClicked);
     titleInputElement.addEventListener('input', onTitleInput);
     priceInputElement.addEventListener('input', onPriceInput);
   };
 })();
+
