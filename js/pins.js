@@ -2,11 +2,10 @@
 
 (function () {
 
-  var ESC_KEY = 'Escape';
   var BUTTON_MAP_PIN_WIDTH = 50;
   var BUTTON_MAP_PIN_HEIGHT = 70;
 
-  var mapPinsElements;
+  window.mapPinsElements = [];
 
   var mapPinsElement = document.querySelector('.map__pins');
 
@@ -27,14 +26,14 @@
 
     var createAdPinsFragment = function () {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < window.ads.length; i++) {
-        fragment.appendChild(renderAdPin(window.ads[i]));
+      for (var i = 0; i < window.map.ads.length; i++) {
+        fragment.appendChild(renderAdPin(window.map.ads[i]));
       }
       mapPinsElement.appendChild(fragment);
     };
     createAdPinsFragment();
 
-    mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
+    window.mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
 
     var pinPopUp;
 
@@ -45,18 +44,16 @@
 
 
     var onDocumentKeydown = function (evt) {
-      if (evt.key === ESC_KEY) {
-        removePopUpAndEscapeListener();
-      }
+      window.util.isEscEvent(evt, removePopUpAndEscapeListener);
     };
 
     var addClickListener = function (i) {
-      mapPinsElements[i].addEventListener('click', function () {
+      window.mapPinsElements[i].addEventListener('click', function () {
         if (pinPopUp !== undefined) {
           pinPopUp.remove();
         }
 
-        pinPopUp = window.getInfoAdElement(window.ads[i]).children[0];
+        pinPopUp = window.getInfoAdElement(window.map.ads[i]).children[0];
 
         document.querySelector('.map__filters-container').before(pinPopUp);
         var mapPopUpCloseElement = document.querySelector('.popup__close');
@@ -69,7 +66,7 @@
 
 
     var addPinsClickListener = function () {
-      for (var i = 0; i < mapPinsElements.length; i++) {
+      for (var i = 0; i < window.mapPinsElements.length; i++) {
         addClickListener(i);
       }
     };

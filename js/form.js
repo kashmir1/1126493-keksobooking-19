@@ -2,6 +2,7 @@
 
 (function () {
 
+
   var NO_GEUSTS_OPTION_INDEX = 3;
   var ONE_GEUST_OPTION_INDEX = 2;
   var TWO_GEUSTS_OPTION_INDEX = 1;
@@ -30,7 +31,13 @@
   var formElement = document.querySelector('.ad-form');
   var fieldsetElements = formElement.querySelectorAll('fieldset');
 
+
   var mapPinElement = document.querySelector('.map');
+
+  var adressInputElement = document.querySelector('#address');
+
+  adressInputElement.value = window.map.startAdress;
+
   var setDisableAttribute = function (elements) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].setAttribute('disabled', 'disabled');
@@ -38,6 +45,7 @@
   };
 
   setDisableAttribute(fieldsetElements);
+
 
   var formMapElement = document.querySelector('.map__filters');
   formMapElement.setAttribute('disabled', 'disabled');
@@ -53,6 +61,7 @@
   var typeValue;
   var titleInputElement = document.querySelector('#title');
   var submitButton = document.querySelector('.ad-form__submit');
+
 
   window.setFormActiveCondition = function () {
     var disableOptions = function (elements, arrayLengths) {
@@ -92,12 +101,6 @@
       checkinSelectElement.value = checkoutSelectElement.value;
     };
 
-    var onRoomTypeChange = function () {
-      typeValue = typeElement.value;
-      priceInputElement.min = minPriceForTypes[typeValue];
-      priceInputElement.placeholder = minPriceForTypes[typeValue];
-    };
-
 
     var onSubmitButtonClick = function () {
       if (!titleInputElement.checkValidity()) {
@@ -108,20 +111,113 @@
       }
     };
 
-    var onInputChanged = function (evt) {
-      if (evt.target.checkValidity()) {
-        evt.target.style.borderColor = 'silver';
+    var changeBorderColor = function (element) {
+      if (element.checkValidity()) {
+        element.style.borderColor = 'silver';
       }
     };
 
+    var onRoomTypeChange = function () {
+      typeValue = typeElement.value;
+      priceInputElement.min = minPriceForTypes[typeValue];
+      priceInputElement.placeholder = minPriceForTypes[typeValue];
+      changeBorderColor(priceInputElement);
+    };
+
+    var onPriceInput = function () {
+      changeBorderColor(priceInputElement);
+    };
+
+    var onTitleInput = function () {
+      changeBorderColor(titleInputElement);
+    };
+
+    var setPageDeactive = function () {
+      mapPinElement.classList.add('map--faded');
+      formMapElement.setAttribute('disabled', 'disabled');
+      formElement.classList.add('ad-form--disabled');
+      setDisableAttribute(fieldsetElements);
+      setDisableAttribute(mapSelectFieldsetElements);
+
+      for (var l = 0; l < window.mapPinsElements.length; l++) {
+        window.mapPinsElements[l].remove();
+      }
+
+      adressInputElement.value = window.map.startAdress;
+    };
+
+    var removeMessage = function (element) {
+      if (element !== null) {
+        element.remove();
+      }
+    };
+
+    var removeDocumentListeners = function () {
+      document.removeEventListener('keydown', onDocumentKeydown);
+      document.removeEventListener('click', onDocumentClick);
+    };
+
+    var onDocumentKeydown = function (evt) {
+      removeMessage(document.querySelector('.success'));
+      removeMessage(document.querySelector('.error'));
+
+      window.util.isEscEvent(evt, removeMessage);
+
+
+      removeDocumentListeners();
+    };
+
+    var onDocumentClick = function () {
+      removeMessage(document.querySelector('.success'));
+      removeMessage(document.querySelector('.error'));
+
+
+      removeDocumentListeners();
+    };
+
+    var errorButtonElement = document.querySelector('.error__button');
+
+    var onErrorButtonClick = function () {
+      removeMessage(document.querySelector('.error'));
+      removeDocumentListeners();
+      errorButtonElement.removeEventListener('click', onErrorButtonClick);
+    };
+
+    var successHandler = function () {
+      var succesTemplate = document.querySelector('#success').content;
+      var successMessage = succesTemplate.cloneNode(true);
+      document.body.appendChild(successMessage.querySelector('div'));
+      formElement.reset();
+
+      document.addEventListener('keydown', onDocumentKeydown);
+      document.addEventListener('click', onDocumentClick);
+      setPageDeactive();
+    };
+
+    var errorHandler = function () {
+      var errorTemplate = document.querySelector('#error').content;
+      var errorMessage = errorTemplate.cloneNode(true);
+      var main = document.querySelector('main');
+      main.appendChild(errorMessage.querySelector('div'));
+
+      document.addEventListener('keydown', onDocumentKeydown);
+      document.addEventListener('click', onDocumentClick);
+      errorButtonElement.addEventListener('click', onErrorButtonClick);
+    };
+
+    var onSubmitButtonClicked = function (evt) {
+      window.upload(new FormData(formElement), successHandler, errorHandler);
+      evt.preventDefault();
+    };
+
+    formElement.addEventListener('submit', onSubmitButtonClicked);
 
     roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
     checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
     checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
     typeElement.addEventListener('change', onRoomTypeChange);
     submitButton.addEventListener('click', onSubmitButtonClick);
-    titleInputElement.addEventListener('input', onInputChanged);
-    priceInputElement.addEventListener('input', onInputChanged);
-
+    titleInputElement.addEventListener('input', onTitleInput);
+    priceInputElement.addEventListener('input', onPriceInput);
   };
 })();
