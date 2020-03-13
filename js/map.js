@@ -6,21 +6,35 @@
   var BUTTON_MAIN_MAP_PIN_HALF_WIDTH = 32;
   var MAX_BLOCK_WIDTH = 1200;
   var MAIN_PIN_HEIGHT_WITHOUT_POINTER = 31;
-  var MAX_AVAILABLE_Y_ADRESS = 630;
-  var MIN_AVAILABLE_Y_ADRESS = 130;
+  var MAX_AVAILABLE_Y_ADDRESS = 630;
+  var MIN_AVAILABLE_Y_ADDRESS = 130;
 
   var ENTER_KEY = 'Enter';
   var LEFT_BUTTON_MOUSE = 0;
+
+  var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  var LOAD_METHOD = 'GET';
 
   var mainPinElement = document.querySelector('.map__pin--main');
   var adressInputElement = document.querySelector('#address');
 
   var mainMapPinElement = document.querySelector('.map__pin--main');
 
-  var successHandler = function (response) {
-    window.map.ads = response;
-    window.setPinsActiveCondition(window.map.ads);
-    window.setFormActiveCondition();
+  var formMapElement = document.querySelector('.map__filters');
+  var mapSelectFieldsetElements = formMapElement.querySelectorAll('select, fieldset');
+
+  var onSuccess = function (response) {
+    var ads = response;
+    for (var i = 0; i < mapSelectFieldsetElements.length; i++) {
+      mapSelectFieldsetElements[i].removeAttribute('disabled');
+    }
+    for (var j = 0; j < ads.length; j++) {
+      if (ads[j].offer !== undefined) {
+        window.map.adsWithOfferField.push(ads[j]);
+      }
+    }
+
+    window.pins.setPinsActiveCondition(window.map.adsWithOfferField.slice(0, window.constants.MAX_PINS_ON_MAP));
   };
 
   var onDocumentKeydown = function (evt) {
@@ -31,7 +45,8 @@
     document.removeEventListener('keydown', onDocumentKeydown);
   };
 
-  var errorHandler = function (errorMessage) {
+  var onError = function () {
+    var errorMessage = 'Произошла Ошибка соединения';
     var node = document.createElement('div');
     node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
     node.style.position = 'absolute';
@@ -47,35 +62,36 @@
   };
 
   var setActiveCondition = function () {
-    window.load(successHandler, errorHandler);
+    window.request(onSuccess, onError, LOAD_URL, LOAD_METHOD);
+    window.setFormActiveCondition();
   };
 
-  window.onMainPinMousedown = function (evt) {
+  var onMainPinMousedown = function (evt) {
     if (evt.button === LEFT_BUTTON_MOUSE) {
       setActiveCondition();
     }
-    mainMapPinElement.removeEventListener('mousedown', window.onMainPinMousedown);
-    mainMapPinElement.removeEventListener('keydown', window.onMainPinKeydown);
+    mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
-  mainMapPinElement.addEventListener('mousedown', window.onMainPinMousedown);
+  mainMapPinElement.addEventListener('mousedown', onMainPinMousedown);
 
-  window.onMainPinKeydown = function (evt) {
+  var onMainPinKeydown = function (evt) {
     if (evt.key === ENTER_KEY) {
       setActiveCondition();
     }
-    mainMapPinElement.removeEventListener('mousedown', window.onMainPinMousedown);
-    mainMapPinElement.removeEventListener('keydown', window.onMainPinKeydown);
+    mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
-  mainMapPinElement.addEventListener('keydown', window.onMainPinKeydown);
+  mainMapPinElement.addEventListener('keydown', onMainPinKeydown);
 
   var blockMaxWidthForPin = MAX_BLOCK_WIDTH - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
   var blockMinWidthForPin = 0 - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
 
 
-  var blockMaxHeightForPin = MAX_AVAILABLE_Y_ADRESS - MAIN_MAP_PIN_AND_POINTER_HEIGHT;
-  var blockMinHeightForPin = MIN_AVAILABLE_Y_ADRESS - MAIN_MAP_PIN_AND_POINTER_HEIGHT;
+  var blockMaxHeightForPin = MAX_AVAILABLE_Y_ADDRESS - MAIN_MAP_PIN_AND_POINTER_HEIGHT;
+  var blockMinHeightForPin = MIN_AVAILABLE_Y_ADDRESS - MAIN_MAP_PIN_AND_POINTER_HEIGHT;
 
   mainPinElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -134,7 +150,9 @@
 
   window.map = {
     startAdress: (mainPinElement.offsetLeft + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (mainPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER),
-    ads: []
+    adsWithOfferField: [],
+    onMainPinMousedown: onMainPinMousedown,
+    onMainPinKeydown: onDocumentKeydown,
   };
 
 
