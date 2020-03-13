@@ -10,7 +10,7 @@
   var mapPinsElement = document.querySelector('.map__pins');
 
 
-  window.setPinsActiveCondition = function () {
+  window.setPinsActiveCondition = function (elements) {
 
     var adTemplateElement = document.querySelector('#pin').content;
 
@@ -24,21 +24,23 @@
       return adElement;
     };
 
-    var createAdPinsFragment = function () {
+    window.createAdPinsFragment = function (adsElements) {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < window.map.ads.length; i++) {
-        fragment.appendChild(renderAdPin(window.map.ads[i]));
+      for (var i = 0; i < adsElements.length; i++) {
+        fragment.appendChild(renderAdPin(adsElements[i]));
       }
       mapPinsElement.appendChild(fragment);
     };
-    createAdPinsFragment();
+
+    var adsFiveElements = elements.slice(0, 5);
+    window.createAdPinsFragment(adsFiveElements);
 
     window.mapPinsElements = mapPinsElement.querySelectorAll('button:not(.map__pin--main)');
 
-    var pinPopUp;
+    window.pinPopUp;
 
     var removePopUpAndEscapeListener = function () {
-      pinPopUp.remove();
+      window.pinPopUp.remove();
       document.removeEventListener('keydown', onDocumentKeydown);
     };
 
@@ -49,13 +51,13 @@
 
     var addClickListener = function (i) {
       window.mapPinsElements[i].addEventListener('click', function () {
-        if (pinPopUp !== undefined) {
-          pinPopUp.remove();
+        if (window.pinPopUp !== undefined) {
+          window.pinPopUp.remove();
         }
 
-        pinPopUp = window.getInfoAdElement(window.map.ads[i]).children[0];
+        window.pinPopUp = window.getInfoAdElement(adsFiveElements[i]).children[0];
 
-        document.querySelector('.map__filters-container').before(pinPopUp);
+        document.querySelector('.map__filters-container').before(window.pinPopUp);
         var mapPopUpCloseElement = document.querySelector('.popup__close');
         mapPopUpCloseElement.addEventListener('click', function () {
           removePopUpAndEscapeListener();
@@ -66,7 +68,7 @@
 
 
     var addPinsClickListener = function () {
-      for (var i = 0; i < window.mapPinsElements.length; i++) {
+      for (var i = 0; i < adsFiveElements.length; i++) {
         addClickListener(i);
       }
     };
