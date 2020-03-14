@@ -82,32 +82,90 @@
 
 
   window.setFormActiveCondition = function () {
-    var disableOptions = function (elements, arrayLengths) {
-      for (var l = 0; l < arrayLengths; l++) {
-        if (!elements[l].hasAttribute('disabled')) {
-          elements[l].setAttribute('disabled', 'disabled');
-        }
-      }
-    };
 
-    disableOptions(roomsCapacityOptionsElements, (roomsCapacityOptionsElements.length - 1));
+    // var disableOptions = function (elements, arrayLengths) {
+    //   for (var l = 0; l < arrayLengths; l++) {
+    //     if (!elements[l].hasAttribute('disabled')) {
+    //       elements[l].setAttribute('disabled', 'disabled');
+    //     }
+    //   }
+    // };
+
+    // disableOptions(roomsCapacityOptionsElements, (roomsCapacityOptionsElements.length - 1));
 
 
     formElement.classList.remove('ad-form--disabled');
     mapPinElement.classList.remove('map--faded');
+
+    // убираем disabled с форм
     for (var i = 0; i < fieldsetElements.length; i++) {
       fieldsetElements[i].removeAttribute('disabled');
     }
-    var onRoomNumberSelectorChanged = function () {
-      disableOptions(roomsCapacityOptionsElements, roomsCapacityOptionsElements.length);
-      var roomNumberValue = roomNumberElement.value;
 
-      for (var k = 0; k < roomsOptionsToBeEnabled[roomNumberValue].length; k++) {
-        var index = roomsOptionsToBeEnabled[roomNumberValue][k];
-        roomsCapacityOptionsElements[index].removeAttribute('disabled');
+    var setValidity = function (element, message) {
+      if (message) {
+        element.classList.add('ad-form__error');
+      } else {
+        element.classList.remove('ad-form__error');
       }
-      roomCapacityElement.selectedIndex = roomsOptionsToBeEnabled[roomNumberValue][0];
+
+      element.setCustomValidity(message);
     };
+
+    // Валидация и соответствие количества гостей с количеством комнат
+
+    var getRoomValidation = function () {
+      if (roomNumberElement.value === '1' && roomCapacityElement.value !== '1') {
+        roomCapacityElement.setCustomValidity('Эта комната для одного гостя');
+      } else if (roomNumberElement.value === '2' && roomCapacityElement.value === '3') {
+        roomCapacityElement.setCustomValidity('Эта комната для одного или двух гостей');
+      } else if (roomNumberElement.value === '2' && roomCapacityElement.value === '0') {
+        roomCapacityElement.setCustomValidity('Эта комната для одного или двух гостей');
+      } else if (roomNumberElement.value === '3' && roomCapacityElement.value === '0') {
+        roomCapacityElement.setCustomValidity('Эта комната для одного - трех гостей');
+      } else if (roomNumberElement.value === '100' && roomCapacityElement.value !== '0') {
+        roomCapacityElement.setCustomValidity('Количество гостей должно быть не менее 100');
+      } else {
+        roomCapacityElement.setCustomValidity('');
+      }
+    };
+
+    getRoomValidation();
+
+
+    roomNumberElement.addEventListener('change', getRoomValidation);
+    roomCapacityElement.addEventListener('change', getRoomValidation);
+
+    // var onRoomNumberSelectorChanged = function () {
+    //   var rooms = parseInt(roomNumberElement.value, 10);
+    //   var capacity = parseInt(roomNumberElement.value, 10);
+    //   var validityMessage = '';
+    //
+    //   if (rooms === 1 && capacity !== 1) {
+    //     validityMessage = 'В 1-ой комнате может быть только 1 гость';
+    //   } else if (rooms === 2 && (capacity < 1 || capacity > 2)) {
+    //     validityMessage = 'В 2-х комнатах может от 1 до 2-х гостей';
+    //   } else if (rooms === 3 && (capacity < 1 || capacity > 3)) {
+    //     validityMessage = 'В 3-х комнатах может быть от 1 до 3-х гостей';
+    //   } else if (rooms === 100 && capacity !== 0) {
+    //     validityMessage = 'В 100 комнатах не может быть гостей';
+    //   }
+    //
+    //   setValidity(roomCapacityElement, validityMessage);
+    //
+    //
+    //   // disableOptions(roomsCapacityOptionsElements, roomsCapacityOptionsElements.length);
+    //
+    //   // var roomNumberValue = roomNumberElement.value;
+    //   //
+    //   // for (var k = 0; k < roomsOptionsToBeEnabled[roomNumberValue].length; k++) {
+    //   //   var index = roomsOptionsToBeEnabled[roomNumberValue][k];
+    //   //   roomsCapacityOptionsElements[index].removeAttribute('disabled');
+    //   // }
+    //   // roomCapacityElement.selectedIndex = roomsOptionsToBeEnabled[roomNumberValue][0];
+    // };
+
+
     var onCheckinTimeSelectorChanged = function () {
       checkoutSelectElement.value = checkinSelectElement.value;
     };
@@ -269,7 +327,7 @@
     window.adPhotoAndUserAvatarLoad.addListeners();
     window.filter.addListener();
     formElement.addEventListener('submit', onFormSubmitted);
-    roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
+    roomNumberElement.addEventListener('change', getRoomValidation);
     checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
     checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
     typeElement.addEventListener('change', onRoomTypeChanged);
