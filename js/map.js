@@ -70,7 +70,6 @@
     if (evt.button === LEFT_BUTTON_MOUSE) {
       setActiveCondition();
     }
-    mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
     mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
@@ -80,11 +79,11 @@
     if (evt.key === ENTER_KEY) {
       setActiveCondition();
     }
-    mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
     mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
   mainMapPinElement.addEventListener('keydown', onMainPinKeydown);
+
 
   var blockMaxWidthForPin = MAX_BLOCK_WIDTH - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
   var blockMinWidthForPin = 0 - BUTTON_MAIN_MAP_PIN_HALF_WIDTH;
@@ -94,6 +93,7 @@
   var blockMinHeightForPin = MIN_AVAILABLE_Y_ADDRESS - MAIN_MAP_PIN_AND_POINTER_HEIGHT;
 
   mainPinElement.addEventListener('mousedown', function (evt) {
+
     evt.preventDefault();
 
     var startCoords = {
@@ -104,18 +104,20 @@
     var yPosition;
 
     var setMainPinPosition = function (mouseEvt) {
+      mouseEvt.preventDefault();
+
       var shift = {
         x: startCoords.x - mouseEvt.clientX,
         y: startCoords.y - mouseEvt.clientY
       };
 
+      yPosition = mainPinElement.offsetTop - shift.y;
+      xPosition = mainPinElement.offsetLeft - shift.x;
+
       startCoords = {
         x: mouseEvt.clientX,
         y: mouseEvt.clientY
       };
-
-      yPosition = mainPinElement.offsetTop - shift.y;
-      xPosition = mainPinElement.offsetLeft - shift.x;
 
       yPosition = Math.max(blockMinHeightForPin, Math.min(yPosition, blockMaxHeightForPin));
       xPosition = Math.max(blockMinWidthForPin, Math.min(xPosition, blockMaxWidthForPin));
@@ -124,13 +126,10 @@
       mainPinElement.style.left = xPosition + 'px';
 
       adressInputElement.value = (xPosition + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (yPosition + MAIN_MAP_PIN_AND_POINTER_HEIGHT);
-
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-
-
       setMainPinPosition(moveEvt);
 
     };
@@ -139,7 +138,6 @@
       upEvt.preventDefault();
 
       setMainPinPosition(upEvt);
-
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -147,6 +145,7 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
 
   window.map = {
     startAdress: (mainPinElement.offsetLeft + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (mainPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER),
