@@ -2,12 +2,6 @@
 
 (function () {
 
-
-  var NO_GEUSTS_OPTION_INDEX = 3;
-  var ONE_GEUST_OPTION_INDEX = 2;
-  var TWO_GEUSTS_OPTION_INDEX = 1;
-  var THREE_GEUSTS_OPTION_INDEX = 0;
-
   var MIN_PRICE_FOR_BUNGALO = 0;
   var MIN_PRICE_FOR_FLAT = 1000;
   var MIN_PRICE_FOR_HOUSE = 5000;
@@ -21,12 +15,18 @@
 
   var DEFAULT_FORM_AVATAR_IMAGE = 'img/muffin-grey.svg';
 
+  var roomQuantity = {
+    ONE_ROOM: '1',
+    TWO_ROOMS: '2',
+    THREE_ROOMS: '3',
+    HUNDRED_ROOMS: '100'
+  };
 
-  var roomsOptionsToBeEnabled = {
-    '1': [ONE_GEUST_OPTION_INDEX],
-    '2': [TWO_GEUSTS_OPTION_INDEX, ONE_GEUST_OPTION_INDEX],
-    '3': [THREE_GEUSTS_OPTION_INDEX, TWO_GEUSTS_OPTION_INDEX, ONE_GEUST_OPTION_INDEX],
-    '100': [NO_GEUSTS_OPTION_INDEX]
+  var guestQuantity = {
+    ONE_GUEST: '1',
+    TWO_GUEST: '2',
+    THREE_GUEST: '3',
+    NOT_FOR_GUEST: '0'
   };
 
   var minPriceForTypes = {
@@ -71,7 +71,6 @@
   setDisableAttribute(mapSelectFieldsetElements);
   var roomNumberElement = document.querySelector('#room_number');
   var roomCapacityElement = document.querySelector('#capacity');
-  var roomsCapacityOptionsElements = roomCapacityElement.querySelectorAll('option');
   var checkoutSelectElement = document.querySelector('#timeout');
   var checkinSelectElement = document.querySelector('#timein');
   var typeElement = document.querySelector('#type');
@@ -83,16 +82,6 @@
 
   window.setFormActiveCondition = function () {
 
-    // var disableOptions = function (elements, arrayLengths) {
-    //   for (var l = 0; l < arrayLengths; l++) {
-    //     if (!elements[l].hasAttribute('disabled')) {
-    //       elements[l].setAttribute('disabled', 'disabled');
-    //     }
-    //   }
-    // };
-
-    // disableOptions(roomsCapacityOptionsElements, (roomsCapacityOptionsElements.length - 1));
-
 
     formElement.classList.remove('ad-form--disabled');
     mapPinElement.classList.remove('map--faded');
@@ -102,28 +91,17 @@
       fieldsetElements[i].removeAttribute('disabled');
     }
 
-    var setValidity = function (element, message) {
-      if (message) {
-        element.classList.add('ad-form__error');
-      } else {
-        element.classList.remove('ad-form__error');
-      }
-
-      element.setCustomValidity(message);
-    };
-
     // Валидация и соответствие количества гостей с количеством комнат
-
     var getRoomValidation = function () {
-      if (roomNumberElement.value === '1' && roomCapacityElement.value !== '1') {
+      if (roomNumberElement.value === roomQuantity.ONE_ROOM && roomCapacityElement.value !== guestQuantity.ONE_GUEST) {
         roomCapacityElement.setCustomValidity('Эта комната для одного гостя');
-      } else if (roomNumberElement.value === '2' && roomCapacityElement.value === '3') {
+      } else if (roomNumberElement.value === roomQuantity.TWO_ROOMS && roomCapacityElement.value === guestQuantity.THREE_GUEST) {
         roomCapacityElement.setCustomValidity('Эта комната для одного или двух гостей');
-      } else if (roomNumberElement.value === '2' && roomCapacityElement.value === '0') {
+      } else if (roomNumberElement.value === roomQuantity.TWO_ROOMS && roomCapacityElement.value === guestQuantity.NOT_FOR_GUEST) {
         roomCapacityElement.setCustomValidity('Эта комната для одного или двух гостей');
-      } else if (roomNumberElement.value === '3' && roomCapacityElement.value === '0') {
+      } else if (roomNumberElement.value === roomQuantity.THREE_ROOMS && roomCapacityElement.value === guestQuantity.NOT_FOR_GUEST) {
         roomCapacityElement.setCustomValidity('Эта комната для одного - трех гостей');
-      } else if (roomNumberElement.value === '100' && roomCapacityElement.value !== '0') {
+      } else if (roomNumberElement.value === roomQuantity.HUNDRED_ROOMS && roomCapacityElement.value !== guestQuantity.NOT_FOR_GUEST) {
         roomCapacityElement.setCustomValidity('Количество гостей должно быть не менее 100');
       } else {
         roomCapacityElement.setCustomValidity('');
@@ -135,36 +113,6 @@
 
     roomNumberElement.addEventListener('change', getRoomValidation);
     roomCapacityElement.addEventListener('change', getRoomValidation);
-
-    // var onRoomNumberSelectorChanged = function () {
-    //   var rooms = parseInt(roomNumberElement.value, 10);
-    //   var capacity = parseInt(roomNumberElement.value, 10);
-    //   var validityMessage = '';
-    //
-    //   if (rooms === 1 && capacity !== 1) {
-    //     validityMessage = 'В 1-ой комнате может быть только 1 гость';
-    //   } else if (rooms === 2 && (capacity < 1 || capacity > 2)) {
-    //     validityMessage = 'В 2-х комнатах может от 1 до 2-х гостей';
-    //   } else if (rooms === 3 && (capacity < 1 || capacity > 3)) {
-    //     validityMessage = 'В 3-х комнатах может быть от 1 до 3-х гостей';
-    //   } else if (rooms === 100 && capacity !== 0) {
-    //     validityMessage = 'В 100 комнатах не может быть гостей';
-    //   }
-    //
-    //   setValidity(roomCapacityElement, validityMessage);
-    //
-    //
-    //   // disableOptions(roomsCapacityOptionsElements, roomsCapacityOptionsElements.length);
-    //
-    //   // var roomNumberValue = roomNumberElement.value;
-    //   //
-    //   // for (var k = 0; k < roomsOptionsToBeEnabled[roomNumberValue].length; k++) {
-    //   //   var index = roomsOptionsToBeEnabled[roomNumberValue][k];
-    //   //   roomsCapacityOptionsElements[index].removeAttribute('disabled');
-    //   // }
-    //   // roomCapacityElement.selectedIndex = roomsOptionsToBeEnabled[roomNumberValue][0];
-    // };
-
 
     var onCheckinTimeSelectorChanged = function () {
       checkoutSelectElement.value = checkinSelectElement.value;
@@ -226,7 +174,6 @@
       adressInputElement.value = window.map.startAdress;
 
       document.removeEventListener('keydown', window.pins.onDocumentKeydown);
-      roomNumberElement.removeEventListener('change', onRoomNumberSelectorChanged);
       checkinSelectElement.removeEventListener('change', onCheckinTimeSelectorChanged);
       checkoutSelectElement.removeEventListener('change', onCheckoutTimeSelectorChanged);
       window.filter.removeListener();

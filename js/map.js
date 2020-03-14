@@ -11,7 +11,6 @@
 
   var ENTER_KEY = 'Enter';
   var LEFT_BUTTON_MOUSE = 0;
-  var RIGHT_BUTTON_MOUSE = 2;
 
   var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var LOAD_METHOD = 'GET';
@@ -71,7 +70,6 @@
     if (evt.button === LEFT_BUTTON_MOUSE) {
       setActiveCondition();
     }
-    // mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
     mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
@@ -81,7 +79,6 @@
     if (evt.key === ENTER_KEY) {
       setActiveCondition();
     }
-    // mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
     mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
