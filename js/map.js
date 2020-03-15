@@ -69,8 +69,9 @@
   var onMainPinMousedown = function (evt) {
     if (evt.button === LEFT_BUTTON_MOUSE) {
       setActiveCondition();
+      mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+      mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
     }
-    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
   mainMapPinElement.addEventListener('mousedown', onMainPinMousedown);
@@ -78,8 +79,9 @@
   var onMainPinKeydown = function (evt) {
     if (evt.key === ENTER_KEY) {
       setActiveCondition();
+      mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+      mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
     }
-    mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   };
 
   mainMapPinElement.addEventListener('keydown', onMainPinKeydown);
@@ -145,7 +147,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
 
   window.map = {
     startAdress: (mainPinElement.offsetLeft + BUTTON_MAIN_MAP_PIN_HALF_WIDTH) + ', ' + (mainPinElement.offsetTop + MAIN_PIN_HEIGHT_WITHOUT_POINTER),
