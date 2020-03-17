@@ -162,7 +162,7 @@
       formElement.reset();
 
       mainMapPinElement.style.cssText = 'left:' + START_MAIN_PIN_LEFT_POSITION + 'px; top: ' + START_MAIN_PIN_TOP_POSITION + 'px;';
-      priceInputElement.placeholder = MIN_PRICE_FOR_BUNGALO;
+      priceInputElement.placeholder = MIN_PRICE_FOR_FLAT;
       previewPhotoElement.querySelector('img').hidden = true;
       previewAvatarElement.querySelector('img').src = DEFAULT_FORM_AVATAR_IMAGE;
 
