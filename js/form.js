@@ -153,6 +153,8 @@
       mapPinElement.classList.add('map--faded');
       formMapElement.setAttribute('disabled', 'disabled');
       formElement.classList.add('ad-form--disabled');
+      titleInputElement.removeAttribute('style');
+      priceInputElement.removeAttribute('style');
       setDisableAttribute(fieldsetElements);
       setDisableAttribute(mapSelectFieldsetElements);
 
