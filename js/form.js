@@ -15,6 +15,10 @@
 
   var DEFAULT_FORM_AVATAR_IMAGE = 'img/muffin-grey.svg';
 
+
+  var ERROR_BORDER = 'red';
+  var SILVER_BORDER = 'silver';
+
   var roomQuantity = {
     ONE_ROOM: '1',
     TWO_ROOMS: '2',
@@ -91,7 +95,7 @@
       fieldsetElements[i].removeAttribute('disabled');
     }
 
-    // Валидация и соответствие количества гостей с количеством комнат
+    // Валидация соответствия количества гостей с количеством комнат
     var getRoomValidation = function () {
       if (roomNumberElement.value === roomQuantity.ONE_ROOM && roomCapacityElement.value !== guestQuantity.ONE_GUEST) {
         roomCapacityElement.setCustomValidity('Эта комната для одного гостя');
@@ -105,6 +109,7 @@
         roomCapacityElement.setCustomValidity('Количество гостей должно быть не менее 100');
       } else {
         roomCapacityElement.setCustomValidity('');
+        roomCapacityElement.style.borderColor = '';
       }
     };
 
@@ -129,8 +134,9 @@
     };
 
     var onSubmitButtonClicked = function () {
-      changeBorderColor(titleInputElement, false, 'red');
-      changeBorderColor(priceInputElement, false, 'red');
+      changeBorderColor(titleInputElement, false, ERROR_BORDER);
+      changeBorderColor(priceInputElement, false, ERROR_BORDER);
+      changeBorderColor(roomCapacityElement, false, ERROR_BORDER);
     };
 
 
@@ -138,15 +144,15 @@
       typeValue = typeElement.value;
       priceInputElement.min = minPriceForTypes[typeValue];
       priceInputElement.placeholder = minPriceForTypes[typeValue];
-      changeBorderColor(priceInputElement, true, 'silver');
+      changeBorderColor(priceInputElement, true, SILVER_BORDER);
     };
 
     var onPriceInput = function () {
-      changeBorderColor(priceInputElement, true, 'silver');
+      changeBorderColor(priceInputElement, true, SILVER_BORDER);
     };
 
     var onTitleInput = function () {
-      changeBorderColor(titleInputElement, true, 'silver');
+      changeBorderColor(titleInputElement, true, SILVER_BORDER);
     };
 
     var setPageDeactive = function () {
@@ -155,6 +161,7 @@
       formElement.classList.add('ad-form--disabled');
       titleInputElement.removeAttribute('style');
       priceInputElement.removeAttribute('style');
+      roomCapacityElement.removeAttribute('style');
       setDisableAttribute(fieldsetElements);
       setDisableAttribute(mapSelectFieldsetElements);
 
