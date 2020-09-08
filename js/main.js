@@ -54,18 +54,13 @@ var createAdsObj = function () {
   return data;
 };
 
-// console.log(createAds(data, 8));
-console.log(createAdsObj());
-// console.log(mocks.push(createAdsObj(), createAdsObj(), createAdsObj()));
-// mocks.push(createAdsObj(), createAdsObj(), createAdsObj());
-console.log(mocks);
 
-var x = function () {
-  for (var i = 0; i < 8; i++) {
-    mocks.push(createAdsObj([i]))
+var x = function (qty, array, obj) {
+  for (var i = 0; i < qty; i++) {
+    array.push(createAdsObj([i]))
   }
-  return mocks;
+  return array;
 };
 
-console.log(x());
+console.log(x(8, mocks));
 
