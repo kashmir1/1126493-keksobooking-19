@@ -7,7 +7,7 @@ var photos = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ];
+];
 
 var getRandomArrayElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -20,18 +20,10 @@ var getRandomNum = function (firstNum, lastNum) {
 
 var mocks = [];
 
-var createAds = function (obj, qty) {
-  for (var i = 0; i <= qty; i++) {
-    mocks.push(obj);
-  }
-  return mocks;
-};
-
-
 var createAdsObj = function () {
   var data = {
     author: {
-      avatar: "img/avatars/user0" + getRandomNum(1, 8) + ".png"
+      avatar: 'img/avatars/user0' + getRandomNum(1, 8) + '.png'
     },
     offer: {
       title: 'Good room',
@@ -55,12 +47,33 @@ var createAdsObj = function () {
 };
 
 
-var x = function (qty, array, obj) {
+var createAds = function (qty, array) {
   for (var i = 0; i < qty; i++) {
-    array.push(createAdsObj([i]))
+    array.push(createAdsObj([i]));
   }
   return array;
 };
 
-console.log(x(8, mocks));
+createAds(8, mocks);
+
+var mapPins = document.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
+
+
+var renderPins = function (pins) {
+  var pinElements = pinTemplate.cloneNode(true);
+
+  pinElements.querySelector('img').src = pins.author.avatar;
+  return pinElements;
+};
+
+var fragment = document.createDocumentFragment();
+for (var i = 0; i < mocks.length; i++) {
+  fragment.appendChild(renderPins(mocks[i]));
+}
+
+mapPins.appendChild(fragment);
+
 
