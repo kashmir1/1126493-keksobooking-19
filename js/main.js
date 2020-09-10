@@ -39,8 +39,8 @@ var createAdsObj = function () {
       photos: getRandomArrayElement(photos)
     },
     location: {
-      x: getRandomNum(1200, 704),
-      y: getRandomNum(130, 630),
+      x: getRandomNum(1200, 704) + 'px',
+      y: getRandomNum(130, 630) + 'px',
     }
   };
   return data;
@@ -58,14 +58,16 @@ createAds(8, mocks);
 
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
+  .content;
+  // .querySelector('.map__pin');
 
 
 var renderPins = function (pins) {
   var pinElements = pinTemplate.cloneNode(true);
 
   pinElements.querySelector('img').src = pins.author.avatar;
+  pinElements.querySelector('.map__pin').style.left = pins.location.x;
+  pinElements.querySelector('.map__pin').style.top = pins.location.y;
   return pinElements;
 };
 
