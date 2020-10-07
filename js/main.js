@@ -115,9 +115,14 @@ var fragment = document.createDocumentFragment();
 
 for (var i = 0; i < mocks.length; i++) {
   fragment.appendChild(renderPin(mocks[i]));
-  fragment.appendChild(renderCard(mocks[i]));
+  // fragment.appendChild(renderCard(mocks[i]));
 }
 
 mapPins.appendChild(fragment);
 
+var mainPin = document.querySelector('.map__pin');
+var mapContainer = document.querySelector('.map--faded');
 
+mainPin.addEventListener('mousedown', function () {
+  mapContainer.classList.remove('map--faded');
+});
