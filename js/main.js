@@ -120,9 +120,16 @@ for (var i = 0; i < mocks.length; i++) {
 
 mapPins.appendChild(fragment);
 
+
+// Активируем карту
+
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
 
-mainPin.addEventListener('mousedown', function () {
+var mapActivateHandler = function () {
   mapContainer.classList.remove('map--faded');
+};
+
+mainPin.addEventListener('mousedown', function () {
+  mapActivateHandler();
 });
