@@ -126,10 +126,21 @@ mapPins.appendChild(fragment);
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
 
-var mapActivateHandler = function () {
-  mapContainer.classList.remove('map--faded');
+var logMouseButton = function (evt) {
+  if (typeof evt === 'object') {
+    switch (evt.button) {
+      case 0:
+        mapContainer.classList.remove('map--faded');
+        break;
+    }
+  }
 };
 
-mainPin.addEventListener('mousedown', function () {
-  mapActivateHandler();
-});
+// var mapActivateHandler = function () {
+//   mapContainer.classList.remove('map--faded');
+// };
+mainPin.addEventListener('mousedown', logMouseButton);
+
+// mainPin.addEventListener('mousedown', function () {
+//   logMouseButton();
+// });
