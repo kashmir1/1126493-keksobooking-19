@@ -126,7 +126,7 @@ mapPins.appendChild(fragment);
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
 
-var logMouseButton = function (evt) {
+var mapActivateDownHandler = function (evt) {
   if (typeof evt === 'object') {
     switch (evt.button) {
       case 0:
@@ -136,11 +136,12 @@ var logMouseButton = function (evt) {
   }
 };
 
-// var mapActivateHandler = function () {
-//   mapContainer.classList.remove('map--faded');
-// };
-mainPin.addEventListener('mousedown', logMouseButton);
+var mapActivateEnterHandler = function (evt) {
+  if (evt.key === 'Enter') {
+    mapContainer.classList.remove('map--faded');
+  }
+};
 
-// mainPin.addEventListener('mousedown', function () {
-//   logMouseButton();
-// });
+mainPin.addEventListener('mousedown', mapActivateDownHandler);
+mainPin.addEventListener('keydown', mapActivateEnterHandler);
+
