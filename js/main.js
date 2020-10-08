@@ -118,30 +118,41 @@ for (var i = 0; i < mocks.length; i++) {
   // fragment.appendChild(renderCard(mocks[i]));
 }
 
-mapPins.appendChild(fragment);
-
-
 // Активируем карту
-
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
 
+
+// Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
   if (typeof evt === 'object') {
     switch (evt.button) {
       case 0:
         mapContainer.classList.remove('map--faded');
+        mapPins.appendChild(fragment);
         break;
     }
   }
 };
 
+// Обработчик активации при нажатии Eter
 var mapActivateEnterHandler = function (evt) {
   if (evt.key === 'Enter') {
     mapContainer.classList.remove('map--faded');
+    mapPins.appendChild(fragment);
   }
+};
+var pinMoveHandler = function () {
+  adress.setAttribute('value', parseInt(mainPin.style.left, 10) + ', '
+    + parseInt(mainPin.style.top, 10));
 };
 
 mainPin.addEventListener('mousedown', mapActivateDownHandler);
 mainPin.addEventListener('keydown', mapActivateEnterHandler);
+mainPin.addEventListener('mousedown', pinMoveHandler);
 
+
+var adress = document.querySelector('#address');
+
+adress.setAttribute('value', parseInt(mainPin.style.left, 10) + ', '
+  + parseInt(mainPin.style.top, 10));
