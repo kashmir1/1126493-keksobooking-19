@@ -125,12 +125,13 @@ var mainForm = document.querySelector('.ad-form, .ad-form--disabled');
 var formElements = mainForm.querySelectorAll('input, select, textarea');
 
 var formDisabled = function (elements) {
-  for (var q = 0; q <= elements.length; q++) {
+  for (var q = 0; q < elements.length; q++) {
     elements[q].setAttribute('disabled', 'disabled');
   }
 };
 
 formDisabled(formElements);
+
 
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
@@ -140,6 +141,14 @@ var mapActivateDownHandler = function (evt) {
         mapContainer.classList.remove('map--faded');
         mainForm.classList.remove('ad-form--disabled');
         mapPins.appendChild(fragment);
+
+        var formEnabled = function (elements) {
+          for (var q = 0; q < elements.length; q++) {
+            elements[q].removeAttribute('disabled');
+          }
+        };
+        formEnabled(formElements);
+
         break;
     }
   }
