@@ -121,7 +121,7 @@ for (var i = 0; i < mocks.length; i++) {
 // Активируем карту
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
-
+var mainForm = document.querySelector('.ad-form, .ad-form--disabled');
 
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
@@ -129,6 +129,7 @@ var mapActivateDownHandler = function (evt) {
     switch (evt.button) {
       case 0:
         mapContainer.classList.remove('map--faded');
+        mainForm.classList.remove('ad-form--disabled');
         mapPins.appendChild(fragment);
         break;
     }
@@ -139,9 +140,12 @@ var mapActivateDownHandler = function (evt) {
 var mapActivateEnterHandler = function (evt) {
   if (evt.key === 'Enter') {
     mapContainer.classList.remove('map--faded');
+    mainForm.classList.remove('ad-form--disabled');
     mapPins.appendChild(fragment);
   }
 };
+
+// Обработчик смены координат
 var pinMoveHandler = function () {
   adress.setAttribute('value', parseInt(mainPin.style.left, 10) + ', '
     + parseInt(mainPin.style.top, 10));
@@ -156,3 +160,4 @@ var adress = document.querySelector('#address');
 
 adress.setAttribute('value', parseInt(mainPin.style.left, 10) + ', '
   + parseInt(mainPin.style.top, 10));
+
