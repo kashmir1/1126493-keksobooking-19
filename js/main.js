@@ -122,6 +122,15 @@ for (var i = 0; i < mocks.length; i++) {
 var mainPin = document.querySelector('.map__pin');
 var mapContainer = document.querySelector('.map--faded');
 var mainForm = document.querySelector('.ad-form, .ad-form--disabled');
+var formElements = mainForm.querySelectorAll('input, select, textarea');
+
+var formDisabled = function (elements) {
+  for (var q = 0; q <= elements.length; q++) {
+    elements[q].setAttribute('disabled', 'disabled');
+  }
+};
+
+formDisabled(formElements);
 
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
