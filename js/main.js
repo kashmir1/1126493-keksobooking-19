@@ -179,3 +179,30 @@ var adress = document.querySelector('#address');
 adress.setAttribute('value', parseInt(mainPin.style.left, 10) + ', '
   + parseInt(mainPin.style.top, 10));
 
+// Валидация
+var housingType = document.querySelector('#type');
+var price = document.querySelector('#price');
+var housingTypeOption = housingType.querySelectorAll('option');
+
+// var pricePerType = function (opt) {
+//   // for (var y = 0; y <= opt.length; y++) {
+//   //
+//   // };
+//
+//
+// };
+
+
+
+var pricePerType = function () {
+  for (var y = 0; y < housingTypeOption.length; y++) {
+    if (housingTypeOption[y].selected && housingTypeOption[y].value === 'bungalo') {
+      price.setAttribute('placeholder', '0');
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'flat') {
+      price.setAttribute('placeholder', '10');
+    }
+  }
+};
+
+housingType.addEventListener('change', pricePerType);
+
