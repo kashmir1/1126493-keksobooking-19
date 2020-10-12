@@ -19,6 +19,20 @@ var typesOffer = [
   },
 ];
 
+var housingTypes = {
+  BUNGALO: 'bungalo',
+  FLAT: 'flat',
+  HOUSE: 'house',
+  PALACE: 'palace'
+};
+
+var pricePerNight = {
+  BUNGALO: '0',
+  FLAT: '1000',
+  HOUSE: '5000',
+  PALACE: '10000'
+};
+
 var checkins = ['12:00', '13:00', '14:00'];
 var features = ['wi-fi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var photos = [
@@ -132,7 +146,6 @@ var formDisabled = function (elements) {
 
 formDisabled(formElements);
 
-
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
   if (typeof evt === 'object') {
@@ -184,27 +197,19 @@ var housingType = document.querySelector('#type');
 var price = document.querySelector('#price');
 var housingTypeOption = housingType.querySelectorAll('option');
 
-// var pricePerType = function (opt) {
-//   // for (var y = 0; y <= opt.length; y++) {
-//   //
-//   // };
-//
-//
-// };
-
 var pricePerType = function () {
   for (var y = 0; y < housingTypeOption.length; y++) {
-    if (housingTypeOption[y].selected && housingTypeOption[y].value === 'bungalo') {
-      price.setAttribute('placeholder', '0');
-    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'flat') {
-      price.setAttribute('placeholder', '1000');
-      price.setAttribute('min', '1000');
-    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'house') {
-      price.setAttribute('placeholder', '5000');
-      price.setAttribute('min', '5000');
-    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'palace') {
-      price.setAttribute('placeholder', '10 000');
-      price.setAttribute('min', '10000');
+    if (housingTypeOption[y].selected && housingTypeOption[y].value === housingTypes.BUNGALO) {
+      price.setAttribute('placeholder', pricePerNight.BUNGALO);
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === housingTypes.FLAT) {
+      price.setAttribute('placeholder', pricePerNight.FLAT);
+      price.setAttribute('min', pricePerNight.FLAT);
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === housingTypes.HOUSE) {
+      price.setAttribute('placeholder', pricePerNight.HOUSE);
+      price.setAttribute('min', pricePerNight.HOUSE);
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === housingTypes.PALACE) {
+      price.setAttribute('placeholder', pricePerNight.PALACE);
+      price.setAttribute('min', pricePerNight.PALACE);
     }
   }
 };
