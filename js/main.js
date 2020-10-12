@@ -198,10 +198,13 @@ var pricePerType = function () {
       price.setAttribute('placeholder', '0');
     } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'flat') {
       price.setAttribute('placeholder', '1000');
+      price.setAttribute('min', '1000');
     } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'house') {
       price.setAttribute('placeholder', '5000');
+      price.setAttribute('min', '5000');
     } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'palace') {
       price.setAttribute('placeholder', '10 000');
+      price.setAttribute('min', '10000');
     }
   }
 };
