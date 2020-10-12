@@ -192,14 +192,16 @@ var housingTypeOption = housingType.querySelectorAll('option');
 //
 // };
 
-
-
 var pricePerType = function () {
   for (var y = 0; y < housingTypeOption.length; y++) {
     if (housingTypeOption[y].selected && housingTypeOption[y].value === 'bungalo') {
       price.setAttribute('placeholder', '0');
     } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'flat') {
-      price.setAttribute('placeholder', '10');
+      price.setAttribute('placeholder', '1000');
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'house') {
+      price.setAttribute('placeholder', '5000');
+    } else if (housingTypeOption[y].selected && housingTypeOption[y].value === 'palace') {
+      price.setAttribute('placeholder', '10 000');
     }
   }
 };
