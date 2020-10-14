@@ -1,4 +1,5 @@
 'use strict';
+var mapFiltersContainer = document.querySelector('.map__filters-container');
 
 var typesOffer = [
   {
@@ -71,15 +72,9 @@ var createAdsObj = function () {
   };
 };
 
-
-var createAds = function (qty, array) {
-  for (var i = 0; i < qty; i++) {
-    array.push(createAdsObj([i]));
-  }
-  return array;
-};
-
-createAds(PINS_QTY, mocks);
+for (var k = 0; k < 8; k++) {
+  mocks[k] = createAdsObj(k);
+}
 
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
@@ -93,15 +88,43 @@ var renderPin = function (pins) {
   pinElements.querySelector('img').src = pins.author.avatar;
   pinElements.querySelector('.map__pin').style.left = pins.location.x;
   pinElements.querySelector('.map__pin').style.top = pins.location.y;
+  // добавить alt
+  // pinElements.addEventListener('click', function () {
+  //   renderCard(pins);
+  //   renderCardMarkup(pins);
+  //   console.log('hello');
+  // });
   return pinElements;
 };
 
 var renderPinsMarkup = function (pins) {
   var pinFragment = document.createDocumentFragment();
+  var cardFragment = document.createDocumentFragment();
   for (var q = 0; q < pins.length; q++) {
-    pinFragment.appendChild(renderPin(pins[q]))
+    pinFragment.appendChild(renderPin(pins[q]));
+    cardFragment.appendChild(renderCard(pins[q]));
   }
   mapPins.appendChild(pinFragment);
+
+  var pin = document.querySelectorAll('button:not(.map__pin--main)');
+
+  var pinClickHandler = function () {
+    mapPins.appendChild(cardFragment);
+  };
+
+  for (var a = 0; a < pin.length; a++) {
+    pin[a].addEventListener('click', pinClickHandler);
+  }
+
+  // mapPins.appendChild(cardFragment);
+
+  // var renderCardMarkup = function (cards) {
+  //   var cardFragment = document.createDocumentFragment();
+  //   for (var q = 0; q < cards.length; q++) {
+  //     cardFragment.appendChild(renderCard(cards[q]));
+  //   }
+  //   mapPins.appendChild(cardFragment);
+  // };
 };
 
 // Рендер попапов
@@ -123,6 +146,8 @@ var renderCard = function (card) {
 
   return cardElements;
 };
+
+
 
 var fragment = document.createDocumentFragment();
 
@@ -150,17 +175,17 @@ var mapActivateDownHandler = function (evt) {
         mainForm.classList.remove('ad-form--disabled');
         renderPinsMarkup(mocks);
 
-        var pin = document.querySelectorAll('.map__pin');
 
-        var pinClickHandler = function () {
-          console.log('hello');
-          fragment.appendChild(renderCard(mocks[1]));
-          mapPins.appendChild(fragment);
-        };
-
-        for (var a = 0; a < pin.length; a++) {
-          pin[a].addEventListener('click', pinClickHandler);
-        }
+        // var pinClickHandler = function () {
+        //   console.log('hello');
+        //   // fragment.appendChild(renderCard(mocks[1]));
+        //   // mapPins.appendChild(fragment);
+        //   renderCardMarkup(mocks);
+        // };
+        //
+        // for (var a = 0; a < pin.length; a++) {
+        //   pin[a].addEventListener('click', pinClickHandler);
+        // }
 
         var formEnabled = function (elements) {
           for (var q = 0; q < elements.length; q++) {
