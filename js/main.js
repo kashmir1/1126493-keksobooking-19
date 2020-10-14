@@ -18,21 +18,18 @@ var typesOffer = [
     name: 'Дом'
   },
 ];
-
 var housingTypes = {
   BUNGALO: 'bungalo',
   FLAT: 'flat',
   HOUSE: 'house',
   PALACE: 'palace'
 };
-
 var pricePerNight = {
   BUNGALO: '0',
   FLAT: '1000',
   HOUSE: '5000',
   PALACE: '10000'
 };
-
 var checkins = ['12:00', '13:00', '14:00'];
 var features = ['wi-fi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var photos = [
@@ -41,19 +38,14 @@ var photos = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 var PINS_QTY = 8;
-
-
 var getRandomArrayElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
-
 var getRandomNum = function (firstNum, lastNum) {
   var rand = firstNum + Math.random() * (lastNum + 1 - firstNum);
   return Math.floor(rand);
 };
-
 var mocks = [];
-
 var createAdsObj = function () {
   return {
     author: {
@@ -98,11 +90,18 @@ var cardTemplate = document.querySelector('#card')
 // Рендер пинов
 var renderPin = function (pins) {
   var pinElements = pinTemplate.cloneNode(true);
-
   pinElements.querySelector('img').src = pins.author.avatar;
   pinElements.querySelector('.map__pin').style.left = pins.location.x;
   pinElements.querySelector('.map__pin').style.top = pins.location.y;
   return pinElements;
+};
+
+var renderPinsMarkup = function (pins) {
+  var pinFragment = document.createDocumentFragment();
+  for (var q = 0; q < pins.length; q++) {
+    pinFragment.appendChild(renderPin(pins[q]))
+  }
+  mapPins.appendChild(pinFragment);
 };
 
 // Рендер попапов
@@ -149,15 +148,9 @@ var mapActivateDownHandler = function (evt) {
       case 0:
         mapContainer.classList.remove('map--faded');
         mainForm.classList.remove('ad-form--disabled');
-
-        for (var i = 0; i < mocks.length; i++) {
-          fragment.appendChild(renderPin(mocks[i]));
-          // fragment.appendChild(renderCard(mocks[i]));
-          mapPins.appendChild(fragment);
-        }
+        renderPinsMarkup(mocks);
 
         var pin = document.querySelectorAll('.map__pin');
-// var popup = document.querySelector('map__card');
 
         var pinClickHandler = function () {
           console.log('hello');
