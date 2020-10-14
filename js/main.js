@@ -127,16 +127,12 @@ var renderCard = function (card) {
 
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < mocks.length; i++) {
-  fragment.appendChild(renderPin(mocks[i]));
-  // fragment.appendChild(renderCard(mocks[i]));
-}
-
 // Активируем карту
-var mainPin = document.querySelector('.map__pin');
+var mainPin = document.querySelector('.map__pin, .map__pin--main');
 var mapContainer = document.querySelector('.map--faded');
 var mainForm = document.querySelector('.ad-form, .ad-form--disabled');
 var formElements = mainForm.querySelectorAll('input, select, textarea');
+
 
 var formDisabled = function (elements) {
   for (var q = 0; q < elements.length; q++) {
@@ -153,7 +149,25 @@ var mapActivateDownHandler = function (evt) {
       case 0:
         mapContainer.classList.remove('map--faded');
         mainForm.classList.remove('ad-form--disabled');
-        mapPins.appendChild(fragment);
+
+        for (var i = 0; i < mocks.length; i++) {
+          fragment.appendChild(renderPin(mocks[i]));
+          // fragment.appendChild(renderCard(mocks[i]));
+          mapPins.appendChild(fragment);
+        }
+
+        var pin = document.querySelectorAll('.map__pin');
+// var popup = document.querySelector('map__card');
+
+        var pinClickHandler = function () {
+          console.log('hello');
+          fragment.appendChild(renderCard(mocks[1]));
+          mapPins.appendChild(fragment);
+        };
+
+        for (var a = 0; a < pin.length; a++) {
+          pin[a].addEventListener('click', pinClickHandler);
+        }
 
         var formEnabled = function (elements) {
           for (var q = 0; q < elements.length; q++) {
