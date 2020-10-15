@@ -88,6 +88,8 @@ var pinTemplate = document.querySelector('#pin')
 var cardTemplate = document.querySelector('#card')
   .content;
 
+var mapPinsElement = document.querySelector('.map__pins');
+
 // Рендер пинов
 var renderPin = function (pins) {
   var pinElements = pinTemplate.cloneNode(true);
@@ -161,6 +163,7 @@ var formDisabled = function (elements) {
 
 formDisabled(formElements);
 
+var mapPinsElements;
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
   if (typeof evt === 'object') {
@@ -169,7 +172,8 @@ var mapActivateDownHandler = function (evt) {
         mapContainer.classList.remove('map--faded');
         mainForm.classList.remove('ad-form--disabled');
         renderPinsMarkup(mocks);
-
+        mapPinsElements = mapPinsElement.querySelectorAll('[type=button]');
+        renderPinsInfo();
 
         // var pinClickHandler = function () {
         //   console.log('hello');
@@ -194,15 +198,41 @@ var mapActivateDownHandler = function (evt) {
   }
 };
 
-var pin = document.querySelectorAll('button:not(.map__pin--main)');
-
-var pinClickHandler = function () {
-  document.querySelector('.map__filters-container').before(renderCard(mocks));
+var renderPinsInfo = function () {
+  for (var i = 0; i < mapPinsElements.length; i++) {
+    addClickListener(i);
+  }
 };
 
-for (var a = 0; a < pin.length; a++) {
-  pin[a].addEventListener('click', pinClickHandler);
-}
+var addClickListener = function (i) {
+  // var removePopUpElement = function () {
+  //   mapPopUp[0].remove();
+  // };
+
+  mapPinsElements[i].addEventListener('click', function () {
+    // if (mapPopUp.length !== 0) {
+    //   removePopUpElement();
+    // }
+
+    document.querySelector('.map__filters-container').before(renderCard(mocks[i]));
+    // mapPopUp = document.querySelectorAll('.map__card');
+
+    // var mapPopUpCloseElement = document.querySelector('.popup__close');
+    // mapPopUpCloseElement.addEventListener('click', function () {
+    //   removePopUpElement();
+    // });
+
+    // window.addEventListener('keydown', function (evt) {
+    //   if (evt.key === ESC_KEY) {
+    //     removePopUpElement();
+    //   }
+    // });
+
+    // document.querySelector('.popup__close').addEventListener('click', function () {
+    //   mapPopUp[0].remove();
+    // });
+  });
+};
 
 // Обработчик активации при нажатии Eter
 var mapActivateEnterHandler = function (evt) {

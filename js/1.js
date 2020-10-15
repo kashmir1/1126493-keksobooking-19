@@ -204,8 +204,8 @@ var setActiveCondition = function () {
   // for (var j = 0; j < mapSelectFieldsetElements.length; j++) {
   //   mapSelectFieldsetElements[j].removeAttribute('disabled');
   // }
-  mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
-  mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
+  // mainMapPinElement.removeEventListener('mousedown', onMainPinMousedown);
+  // mainMapPinElement.removeEventListener('keydown', onMainPinKeydown);
   // roomNumberElement.addEventListener('change', onRoomNumberSelectorChanged);
   // checkinSelectElement.addEventListener('change', onCheckinTimeSelectorChanged);
   // checkoutSelectElement.addEventListener('change', onCheckoutTimeSelectorChanged);
