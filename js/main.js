@@ -173,7 +173,6 @@ var mapActivateDownHandler = function (evt) {
         mainForm.classList.remove('ad-form--disabled');
         renderPinsMarkup(mocks);
         mapPinsElements = mapPinsElement.querySelectorAll('[type=button]');
-        renderPinsInfo();
 
         // var pinClickHandler = function () {
         //   console.log('hello');
@@ -185,7 +184,7 @@ var mapActivateDownHandler = function (evt) {
         // for (var a = 0; a < pin.length; a++) {
         //   pin[a].addEventListener('click', pinClickHandler);
         // }
-
+        renderPinsInfo();
         var formEnabled = function (elements) {
           for (var q = 0; q < elements.length; q++) {
             elements[q].removeAttribute('disabled');
@@ -197,6 +196,12 @@ var mapActivateDownHandler = function (evt) {
     }
   }
 };
+
+// Мы создали функцию RenderPinsInfo в которой цикл идет по длине всех пинов и на каждой итерации
+// запускает обработчик AddClickListener
+// Данный обработчик активируется при клике на i-pin и аппендит моковые данные по итератору
+// После этого мыдобавлям данную функцию в наш обработчик активации карты, чтобы заработало
+
 
 var renderPinsInfo = function () {
   for (var i = 0; i < mapPinsElements.length; i++) {
