@@ -73,9 +73,14 @@ var createAdsObj = function () {
   };
 };
 
-for (var k = 0; k < 8; k++) {
-  mocks[k] = createAdsObj(k);
-}
+var createAds = function (qty, array) {
+  for (var i = 0; i < qty; i++) {
+    array.push(createAdsObj([i]));
+  }
+  return array;
+};
+
+createAds(PINS_QTY, mocks);
 
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
@@ -100,22 +105,11 @@ var renderPin = function (pins) {
 
 var renderPinsMarkup = function () {
   var pinFragment = document.createDocumentFragment();
-  var cardFragment = document.createDocumentFragment();
+
   for (var q = 0; q < mocks.length; q++) {
     pinFragment.appendChild(renderPin(mocks[q]));
-    cardFragment.appendChild(renderCard(mocks[q]));
   }
   mapPins.appendChild(pinFragment);
-
-  var pin = document.querySelectorAll('button:not(.map__pin--main)');
-
-  var pinClickHandler = function () {
-    mapPins.appendChild(cardFragment);
-  };
-
-  for (var a = 0; a < pin.length; a++) {
-    pin[a].addEventListener('click', pinClickHandler);
-  }
 
   // mapPins.appendChild(cardFragment);
 
@@ -199,6 +193,16 @@ var mapActivateDownHandler = function (evt) {
     }
   }
 };
+
+var pin = document.querySelectorAll('button:not(.map__pin--main)');
+
+var pinClickHandler = function () {
+  document.querySelector('.map__filters-container').before(renderCard(mocks));
+};
+
+for (var a = 0; a < pin.length; a++) {
+  pin[a].addEventListener('click', pinClickHandler);
+}
 
 // Обработчик активации при нажатии Eter
 var mapActivateEnterHandler = function (evt) {
