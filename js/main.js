@@ -79,8 +79,7 @@ for (var k = 0; k < 8; k++) {
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content;
-var cardTemplate = document.querySelector('#card')
-  .content;
+
 
 // Рендер пинов
 var renderPin = function (pins) {
@@ -97,35 +96,16 @@ var renderPin = function (pins) {
   return pinElements;
 };
 
-var renderPinsMarkup = function (pins) {
+var renderPinsMarkup = function () {
   var pinFragment = document.createDocumentFragment();
-  var cardFragment = document.createDocumentFragment();
-  for (var q = 0; q < pins.length; q++) {
-    pinFragment.appendChild(renderPin(pins[q]));
-    cardFragment.appendChild(renderCard(pins[q]));
+  for (var q = 0; q < mocks.length; q++) {
+    pinFragment.appendChild(renderPin(mocks[q]));
   }
   mapPins.appendChild(pinFragment);
-
-  var pin = document.querySelectorAll('button:not(.map__pin--main)');
-
-  var pinClickHandler = function () {
-    mapPins.appendChild(cardFragment);
-  };
-
-  for (var a = 0; a < pin.length; a++) {
-    pin[a].addEventListener('click', pinClickHandler);
-  }
-
-  // mapPins.appendChild(cardFragment);
-
-  // var renderCardMarkup = function (cards) {
-  //   var cardFragment = document.createDocumentFragment();
-  //   for (var q = 0; q < cards.length; q++) {
-  //     cardFragment.appendChild(renderCard(cards[q]));
-  //   }
-  //   mapPins.appendChild(cardFragment);
-  // };
 };
+
+var cardTemplate = document.querySelector('#card')
+  .content;
 
 // Рендер попапов
 var renderCard = function (card) {
