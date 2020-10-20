@@ -203,21 +203,27 @@ var renderPinsInfo = function () {
 var mapPopUp = [];
 var addClickListener = function (i) {
 
-  var removePopUpElementHandler = function () {
+  var closePopUpHandler = function () {
     mapPopUp[0].remove();
+  };
+
+  var closePopupEscHandler = function (evt) {
+    if (evt.key === 'Escape') {
+      closePopUpHandler();
+    }
   };
 
   mapPinsElements[i].addEventListener('click', function () {
     if (mapPopUp.length !== 0) {
-      removePopUpElementHandler();
+      closePopUpHandler();
     }
 
     document.querySelector('.map__filters-container').before(renderCard(mocks[i]));
     mapPopUp = document.querySelectorAll('.map__card');
 
     var popupClose = document.querySelector('.popup__close');
-    popupClose.addEventListener('click', removePopUpElementHandler);
-
+    popupClose.addEventListener('click', closePopUpHandler);
+    window.addEventListener('keydown', closePopupEscHandler);
   });
 };
 
