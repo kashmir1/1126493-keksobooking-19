@@ -140,11 +140,8 @@ var renderCard = function (card) {
   cardElements.querySelector('.popup__description').textContent = card.offer.description;
   cardElements.querySelector('.popup__photos img').src = card.offer.photos;
   cardElements.querySelector('.popup__avatar').src = card.author.avatar;
-
   return cardElements;
 };
-
-
 
 var fragment = document.createDocumentFragment();
 
@@ -164,6 +161,7 @@ var formDisabled = function (elements) {
 formDisabled(formElements);
 
 var mapPinsElements;
+
 // Обработчкик активациии при нажатии только ЛКМ
 var mapActivateDownHandler = function (evt) {
   if (typeof evt === 'object') {
@@ -172,19 +170,11 @@ var mapActivateDownHandler = function (evt) {
         mapContainer.classList.remove('map--faded');
         mainForm.classList.remove('ad-form--disabled');
         renderPinsMarkup(mocks);
+
         mapPinsElements = mapPinsElement.querySelectorAll('[type=button]');
 
-        // var pinClickHandler = function () {
-        //   console.log('hello');
-        //   // fragment.appendChild(renderCard(mocks[1]));
-        //   // mapPins.appendChild(fragment);
-        //   renderCardMarkup(mocks);
-        // };
-        //
-        // for (var a = 0; a < pin.length; a++) {
-        //   pin[a].addEventListener('click', pinClickHandler);
-        // }
         renderPinsInfo();
+
         var formEnabled = function (elements) {
           for (var q = 0; q < elements.length; q++) {
             elements[q].removeAttribute('disabled');
@@ -209,35 +199,30 @@ var renderPinsInfo = function () {
   }
 };
 
+
+var mapPopUp = [];
 var addClickListener = function (i) {
-  // var removePopUpElement = function () {
-  //   mapPopUp[0].remove();
-  // };
+
+  var removePopUpElementHandler = function () {
+    mapPopUp[0].remove();
+  };
 
   mapPinsElements[i].addEventListener('click', function () {
-    // if (mapPopUp.length !== 0) {
-    //   removePopUpElement();
-    // }
+    if (mapPopUp.length !== 0) {
+      removePopUpElementHandler();
+    }
 
     document.querySelector('.map__filters-container').before(renderCard(mocks[i]));
-    // mapPopUp = document.querySelectorAll('.map__card');
+    mapPopUp = document.querySelectorAll('.map__card');
 
-    // var mapPopUpCloseElement = document.querySelector('.popup__close');
-    // mapPopUpCloseElement.addEventListener('click', function () {
-    //   removePopUpElement();
-    // });
+    var popupClose = document.querySelector('.popup__close');
+    popupClose.addEventListener('click', removePopUpElementHandler);
 
-    // window.addEventListener('keydown', function (evt) {
-    //   if (evt.key === ESC_KEY) {
-    //     removePopUpElement();
-    //   }
-    // });
-
-    // document.querySelector('.popup__close').addEventListener('click', function () {
-    //   mapPopUp[0].remove();
-    // });
   });
 };
+
+
+
 
 // Обработчик активации при нажатии Eter
 var mapActivateEnterHandler = function (evt) {
