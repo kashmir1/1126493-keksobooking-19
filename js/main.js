@@ -260,4 +260,19 @@ var pricePerType = function () {
   }
 };
 
+var timeIn = document.querySelector('#timein');
+var timeOut = document.querySelector('#timeout');
+var timeInList = timeIn.querySelectorAll('option');
+var timeOutList = timeOut.querySelectorAll('option');
+
+var calculateInOutTime = function () {
+  for (var u = 0; u < timeInList.length; u++) {
+    if (timeInList[u].selected) {
+      timeOutList[u].selected = timeInList[u];
+    }
+  }
+};
+
+timeIn.addEventListener('change', calculateInOutTime);
+
 housingType.addEventListener('change', pricePerType);
