@@ -1,6 +1,4 @@
-
 'use strict';
-var mapFiltersContainer = document.querySelector('.map__filters-container');
 
 var typesOffer = [
   {
@@ -47,6 +45,7 @@ var getRandomNum = function (firstNum, lastNum) {
   var rand = firstNum + Math.random() * (lastNum + 1 - firstNum);
   return Math.floor(rand);
 };
+
 var mocks = [];
 var createAdsObj = function () {
   return {
@@ -96,12 +95,6 @@ var renderPin = function (pins) {
   pinElements.querySelector('img').src = pins.author.avatar;
   pinElements.querySelector('.map__pin').style.left = pins.location.x;
   pinElements.querySelector('.map__pin').style.top = pins.location.y;
-  // добавить alt
-  // pinElements.addEventListener('click', function () {
-  //   renderCard(pins);
-  //   renderCardMarkup(pins);
-  //   console.log('hello');
-  // });
   return pinElements;
 };
 
@@ -112,16 +105,6 @@ var renderPinsMarkup = function () {
     pinFragment.appendChild(renderPin(mocks[q]));
   }
   mapPins.appendChild(pinFragment);
-
-  // mapPins.appendChild(cardFragment);
-
-  // var renderCardMarkup = function (cards) {
-  //   var cardFragment = document.createDocumentFragment();
-  //   for (var q = 0; q < cards.length; q++) {
-  //     cardFragment.appendChild(renderCard(cards[q]));
-  //   }
-  //   mapPins.appendChild(cardFragment);
-  // };
 };
 
 // Рендер попапов
@@ -192,7 +175,6 @@ var mapActivateDownHandler = function (evt) {
 // Данный обработчик активируется при клике на i-pin и аппендит моковые данные по итератору
 // После этого мыдобавлям данную функцию в наш обработчик активации карты, чтобы заработало
 
-
 var renderPinsInfo = function () {
   for (var i = 0; i < mapPinsElements.length; i++) {
     addClickListener(i);
@@ -201,17 +183,20 @@ var renderPinsInfo = function () {
 
 
 var mapPopUp = [];
+
+// Закрытие попапа
+var closePopUpHandler = function () {
+  mapPopUp[0].remove();
+};
+
+// Закрытие попапа по Esc
+var closePopupEscHandler = function (evt) {
+  if (evt.key === 'Escape') {
+    closePopUpHandler();
+  }
+};
+
 var addClickListener = function (i) {
-
-  var closePopUpHandler = function () {
-    mapPopUp[0].remove();
-  };
-
-  var closePopupEscHandler = function (evt) {
-    if (evt.key === 'Escape') {
-      closePopUpHandler();
-    }
-  };
 
   mapPinsElements[i].addEventListener('click', function () {
     if (mapPopUp.length !== 0) {
@@ -226,8 +211,6 @@ var addClickListener = function (i) {
     window.addEventListener('keydown', closePopupEscHandler);
   });
 };
-
-
 
 
 // Обработчик активации при нажатии Eter
