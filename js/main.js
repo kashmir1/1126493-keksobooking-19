@@ -243,7 +243,7 @@ var housingType = document.querySelector('#type');
 var price = document.querySelector('#price');
 var housingTypeOption = housingType.querySelectorAll('option');
 
-var pricePerType = function () {
+var calculatePricePerType = function () {
   for (var y = 0; y < housingTypeOption.length; y++) {
     if (housingTypeOption[y].selected && housingTypeOption[y].value === housingTypes.BUNGALO) {
       price.setAttribute('placeholder', pricePerNight.BUNGALO);
@@ -265,14 +265,20 @@ var timeOut = document.querySelector('#timeout');
 var timeInList = timeIn.querySelectorAll('option');
 var timeOutList = timeOut.querySelectorAll('option');
 
-var calculateInOutTime = function () {
+
+var calculateInTime = function () {
   for (var u = 0; u < timeInList.length; u++) {
-    if (timeInList[u].selected) {
-      timeOutList[u].selected = timeInList[u];
-    }
+    timeOutList[u].selected = timeInList[u].selected;
   }
 };
 
-timeIn.addEventListener('change', calculateInOutTime);
+var calculateOutTime = function () {
+  for (var u = 0; u < timeInList.length; u++) {
+    timeInList[u].selected = timeOutList[u].selected;
+  }
+};
 
-housingType.addEventListener('change', pricePerType);
+timeIn.addEventListener('change', calculateInTime);
+timeOut.addEventListener('change', calculateOutTime);
+
+housingType.addEventListener('change', calculatePricePerType);
