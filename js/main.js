@@ -38,36 +38,29 @@ var photos = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 var PINS_QTY = 8;
-var getRandomArrayElement = function (array) {
-  return array[Math.floor(Math.random() * array.length)];
-};
-var getRandomNum = function (firstNum, lastNum) {
-  var rand = firstNum + Math.random() * (lastNum + 1 - firstNum);
-  return Math.floor(rand);
-};
 
 var mocks = [];
 var createAdsObj = function () {
   return {
     author: {
-      avatar: 'img/avatars/user0' + getRandomNum(1, 8) + '.png'
+      avatar: 'img/avatars/user0' + window.utils.getRandomNum(1, 8) + '.png'
     },
     offer: {
       title: 'Good room',
       address: '600, 350',
       price: 10000,
-      type: getRandomArrayElement(typesOffer),
+      type: window.utils.getRandomArrayElement(typesOffer),
       rooms: 5,
       guests: 10,
-      checkin: getRandomArrayElement(checkins),
-      checkout: getRandomArrayElement(checkins),
-      features: getRandomArrayElement(features),
+      checkin: window.utils.getRandomArrayElement(checkins),
+      checkout: window.utils.getRandomArrayElement(checkins),
+      features: window.utils.getRandomArrayElement(features),
       description: 'Best room for you',
-      photos: getRandomArrayElement(photos)
+      photos: window.utils.getRandomArrayElement(photos)
     },
     location: {
-      x: getRandomNum(0, 1200) + 'px',
-      y: getRandomNum(130, 630) + 'px',
+      x: window.utils.getRandomNum(0, 1200) + 'px',
+      y: window.utils.getRandomNum(130, 630) + 'px',
     }
   };
 };
